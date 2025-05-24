@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+.venv/
+venv/
+.env*
+
+# Poetry
+poetry.lock
+
+# Node.js
+node_modules/
+dist/
+.next/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Storybook
+storybook-static/
+
+# SAM/CloudFormation
+.aws-sam/
+
+# その他
+*.swp
+*.swo 

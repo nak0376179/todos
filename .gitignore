@@ -7,6 +7,7 @@ __pycache__/
 .venv/
 venv/
 .env*
+.pytest_cache/
 
 # Poetry
 # poetry.lock（除外しない）
@@ -37,3 +38,5 @@ storybook-static/
 # その他
 *.swp
 *.swo 
+*storybook.log
+ 

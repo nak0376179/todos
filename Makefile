@@ -1,47 +1,57 @@
 # ===== 共通 =====
-.PHONY: help frontend backend
+.PHONY: help frontend backend test-backend dev vitest pytest
 
 help:
-	@echo "Usage: make [target]"
-	@echo "  frontend-dev        # フロントエンド開発サーバ起動"
-	@echo "  frontend-build      # フロントエンドビルド"
-	@echo "  frontend-lint       # フロントエンドLint"
-	@echo "  frontend-storybook  # Storybook起動"
-	@echo "  frontend-test       # フロントエンドテスト (Vitest)"
-	@echo "  backend-dev         # バックエンド開発サーバ起動"
-	@echo "  backend-test        # バックエンドテスト (pytest)"
-	@echo "  backend-lint        # バックエンドLint (flake8等追加可)"
-	@echo "  backend-sam-build   # SAMビルド(zip)"
-	@echo "  backend-sam-deploy  # SAMデプロイ"
+	@awk 'BEGIN {FS = ":|#"; printf "\033[1;36mUsage: make [target]\033[0m\n"} \
+	/^[a-zA-Z0-9_.-]+:.*# / {printf "  \033[1;32m%-20s\033[0m %s\n", $$1, substr($$0, index($$0, "#") + 2)}' $(MAKEFILE_LIST)
 
-# ===== フロントエンド =====
-frontend-dev:
+dev: # フロントエンド・バックエンド同時起動＆DB初期化
+	$(MAKE) backend-init-db
+	$(MAKE) -j2 backend-dev frontend-dev
+
+frontend-dev: # フロントエンド開発サーバ起動
 	cd frontend && npm run dev
 
-frontend-build:
+frontend-build: # フロントエンドビルド
 	cd frontend && npm run build
 
-frontend-lint:
+frontend-lint: # フロントエンドLint
 	cd frontend && npm run lint
 
-frontend-storybook:
+frontend-storybook: # Storybook起動
 	cd frontend && npm run storybook
 
-frontend-test:
+storybook: frontend-storybook
+
+frontend-test: # フロントエンドテスト (Vitest)
 	cd frontend && npx vitest run
 
-# ===== バックエンド =====
-backend-dev:
+vitest: # フロントエンドテスト (Vitest)
+	cd frontend && npx vitest run
+
+backend-dev: # バックエンド開発サーバ起動
 	cd backend && poetry run uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-backend-test:
-	cd backend && poetry run pytest
+backend-test: # バックエンドテスト (pytest)
+	cd backend && PYTHONIOENCODING=UTF-8 poetry run pytest -v
 
-backend-lint:
-	cd backend && poetry run flake8 || echo 'flake8未導入: 必要ならpoetry add --dev flake8'
+pytest: # バックエンドテスト (pytest)
+	cd backend && PYTHONIOENCODING=UTF-8 poetry run pytest -v
 
-backend-sam-build:
+backend-lint: # バックエンドLint (ruff)
+	cd backend && poetry run ruff .
+
+backend-format: # バックエンド自動整形 (black)
+	cd backend && poetry run black .
+
+backend-typecheck: # バックエンド型チェック (mypy)
+	cd backend && poetry run mypy .
+
+backend-sam-build: # SAMビルド(zip)
 	cd backend && sam build --use-container
 
-backend-sam-deploy:
-	cd backend && sam deploy --guided 
+backend-sam-deploy: # SAMデプロイ
+	cd backend && sam deploy --guided
+
+backend-init-db: # LocalStack上にDynamoDBテーブルを作成
+	cd backend && poetry run python -c "import app.db; app.db.create_table()" 

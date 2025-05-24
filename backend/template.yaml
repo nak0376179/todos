@@ -9,7 +9,7 @@ Resources:
       Handler: main.handler
       Runtime: python3.11
       CodeUri: .
-      Timeout: 10
+      Timeout: 30
       Events:
         Api:
           Type: Api

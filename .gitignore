@@ -9,7 +9,7 @@ venv/
 .env*
 
 # Poetry
-poetry.lock
+# poetry.lock（除外しない）
 
 # Node.js
 node_modules/
@@ -21,8 +21,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # VSCode
-.vscode/
-*.code-workspace
+# .vscode/（除外しない）
+# *.code-workspace（除外しない）
 
 # OS
 .DS_Store

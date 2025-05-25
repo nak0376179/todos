@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from app.schemas.todo import Todo
+from app.schemas.todo import Todo, PostTodoResponse
 from app.schemas.error import ErrorResponse, ValidationErrorResponse
-from app.schemas.response import ItemsResponse, PostResponse, UpdateResponse, DeleteResponse
+from app.schemas.response import ItemsResponse, UpdateResponse, DeleteResponse
 from app.services.todos_service import TodoService
 
 router = APIRouter()
@@ -21,7 +21,7 @@ def list_todos():
 
 @router.post(
     "/todos",
-    response_model=PostResponse,
+    response_model=PostTodoResponse,
     responses={
         400: {"model": ErrorResponse, "description": "ID already exists"},
         422: {"model": ValidationErrorResponse, "description": "Validation Error"},
@@ -29,7 +29,7 @@ def list_todos():
 )
 def create_todo(todo: Todo):
     TodoService.create_todo(todo)
-    return {"message": "ok"}
+    return {"todo_id": todo.todo_id, "message": "ok"}
 
 
 @router.get(

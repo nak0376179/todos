@@ -17,7 +17,7 @@ class TodoRepository:
     @staticmethod
     def get_todo(todo_id: str) -> Optional[Todo]:
         table = get_table()
-        item = table.get_item(Key={"id": todo_id}).get("Item")
+        item = table.get_item(Key={"todo_id": todo_id}).get("Item")
         if not item:
             return None
         return Todo(**item)
@@ -37,5 +37,5 @@ class TodoRepository:
     @staticmethod
     def delete_todo(todo_id: str) -> bool:
         table = get_table()
-        table.delete_item(Key={"id": todo_id})
+        table.delete_item(Key={"todo_id": todo_id})
         return True

@@ -8,25 +8,19 @@ T = TypeVar("T")
 
 
 class ItemsResponse(GenericModel, Generic[T]):
-    """複数のアイテムを返すためのモデルです。"""
+    """複数のアイテムを返すための共通レスポンススキーマ"""
 
     Items: List[T]
     LastEvaluatedKey: Optional[Dict[str, Any]] = None
 
 
-class PostResponse(BaseModel):
-    """新しく作成した結果を返すためのモデルです。"""
-
-    message: str
-
-
 class UpdateResponse(BaseModel):
-    """更新した結果を返すためのモデルです。"""
+    """更新した結果を返すための共通レスポンススキーマ"""
 
     message: str
 
 
 class DeleteResponse(BaseModel):
-    """削除した結果を返すためのモデルです。"""
+    """削除した結果を返すための共通レスポンススキーマ"""
 
     message: str

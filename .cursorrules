@@ -15,6 +15,7 @@
 - Prettierはセミコロンなし・シングルクオート・printWidth 120で統一
 - 依存はfrontendディレクトリ内で管理（外部グローバルインストール禁止）
 - テスト・ストーリーもESLintでlint（plugin:vitest/recommended, plugin:storybook/recommended）
+- APIレスポンスはItemsResponse/MessageResponse型で統一し、テスト・StorybookのMSWモックも同じ形式で返す
 
 ### バックエンド
 - poetry+pyenvでFastAPI+Mangum+pydantic
@@ -23,6 +24,8 @@
 - ruff, mypy, blackを導入し、Makefileで一括実行できるようにする
 - pytestで日本語関数名テスト
 - 型・エラー型はフロントと揃える
+- models（DB・永続化層の型）とschemas（API入出力用スキーマ）は分離
+- APIレスポンスはItemsResponse/MessageResponse型で統一
 
 ### インフラ・共通
 - LocalStack（docker）をlocal環境で起動し、開発・テスト用のDynamoDB等として利用する
@@ -33,7 +36,10 @@
 - frontend/src/hooks/api: APIクライアント・型・カスタムフックを配置
 - frontend/src/layouts: レイアウト用コンポーネントを配置
 - frontend/src/pages: Next.js風にパスごとにページを配置（中身はcomponentsで実装）
-- backendは3層（api, service, repository）で整理
+- backend/app/models: DB・永続化層の型を配置
+- backend/app/schemas: API入出力用のPydanticスキーマを配置
+- backend/app/api: FastAPIのルータを配置
+- backend/app/repositories, backend/app/services: リポジトリ・サービス層
 
 ## テスト・Storybook・モック
 - フロントエンドのテストはVitest＋Testing Libraryで作成
@@ -42,9 +48,11 @@
 - QueryClientProviderはテスト・Storybook両方で必ずラップ
 - vi.spyOn等の手動フックモックは原則禁止、API通信はMSWで統一
 
+
 ## Lint・整形・依存
 - Prettierはセミコロンなし・シングルクオート・printWidth 120で統一
 - ESLintはテスト・ストーリーも含めて一元管理
+- ruffで保存時自動整形
 - 依存はfrontendディレクトリ内で管理（外部グローバルインストール禁止）
 - .envやAPI_BASE_URLの指定ミスに注意
 - backendとAPI型・エラー型を揃える

@@ -20,7 +20,7 @@ class TodoService:
 
     @staticmethod
     def create_todo(todo: Todo) -> Todo:
-        if TodoRepository.get_todo(todo.id):
+        if TodoRepository.get_todo(todo.todo_id):
             raise HTTPException(status_code=400, detail="ID already exists")
         return TodoRepository.create_todo(todo)
 

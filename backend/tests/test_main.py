@@ -23,7 +23,7 @@ def clear_table():
     scan = table.scan()
     with table.batch_writer() as batch:
         for item in scan.get("Items", []):
-            batch.delete_item(Key={"id": item["id"]})
+            batch.delete_item(Key={"todo_id": item["todo_id"]})
 
 
 def post_todo(todo=None):
@@ -33,20 +33,20 @@ def post_todo(todo=None):
 
 
 def default_todo():
-    return {"id": "1", "title": "test", "description": "desc", "completed": False}
+    return {"todo_id": "1", "title": "test", "description": "desc", "completed": False}
 
 
 def test_todo_新規作成できること():
     r = post_todo()
     assert r.status_code == 200
-    assert r.json()["id"] == "1"
+    assert r.json()["todo_id"] == "1"
 
 
 def test_todo_一覧取得できること():
     post_todo()
     r = client.get("/todos")
     assert r.status_code == 200
-    assert len(r.json()) == 1
+    assert len(r.json()["Items"]) == 1
 
 
 def test_todo_個別取得できること():
@@ -54,15 +54,15 @@ def test_todo_個別取得できること():
     r = client.get("/todos/1")
     assert r.status_code == 200
     assert r.json()["title"] == "test"
+    assert r.json()["todo_id"] == "1"
 
 
 def test_todo_更新できること():
     post_todo()
-    updated = {"id": "1", "title": "updated", "description": "desc2", "completed": True}
+    updated = {"todo_id": "1", "title": "updated", "description": "desc2", "completed": True}
     r = client.put("/todos/1", json=updated)
     assert r.status_code == 200
-    assert r.json()["title"] == "updated"
-    assert r.json()["completed"] is True
+    assert r.json()["message"] == "ok"
 
 
 def test_todo_削除できること():

@@ -21,7 +21,7 @@
 - poetry+pyenvでFastAPI+Mangum+pydantic
 - LambdaデプロイはAWS SAM（zip形式）で行う
 - LocalStack（docker）をlocal環境で起動し、開発・テスト用のDynamoDB等として利用する
-- ruff, mypy, blackを導入し、Makefileで一括実行できるようにする
+- ruff, blackを導入し、Makefileで一括実行できるようにする
 - pytestで日本語関数名テスト
 - 型・エラー型はフロントと揃える
 - models（DB・永続化層の型）とschemas（API入出力用スキーマ）は分離
@@ -63,5 +63,4 @@
 - linterエラー（型インポート等）は都度修正
 - .envやAPI_BASE_URLの指定ミスに注意
 - backendとAPI型・エラー型を揃える
-- .pytest_cache, .mypy_cache, __pycache__は.gitignoreとVSCodeで非表示
  

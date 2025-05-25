@@ -1,13 +1,16 @@
 from typing import List, Optional, Dict, Any, TypeVar, Generic
 from pydantic import BaseModel
-from pydantic.generics import GenericModel
 
 T = TypeVar("T")
 
 # Get応答は定義しない。
 
 
-class ItemsResponse(GenericModel, Generic[T]):
+class MessageResponse(BaseModel):
+    message: str
+
+
+class ItemsResponse(BaseModel, Generic[T]):
     """複数のアイテムを返すための共通レスポンススキーマ"""
 
     Items: List[T]

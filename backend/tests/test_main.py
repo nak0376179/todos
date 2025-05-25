@@ -59,7 +59,12 @@ def test_todo_個別取得できること():
 
 def test_todo_更新できること():
     post_todo()
-    updated = {"todo_id": "1", "title": "updated", "description": "desc2", "completed": True}
+    updated = {
+        "todo_id": "1",
+        "title": "updated",
+        "description": "desc2",
+        "completed": True,
+    }
     r = client.put("/todos/1", json=updated)
     assert r.status_code == 200
     assert r.json()["message"] == "ok"

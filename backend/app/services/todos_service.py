@@ -1,6 +1,4 @@
-from typing import List
 from app.schemas.todo import Todo
-from app.models.todo import TodoModel
 from app.repositories.todos_repository import TodoRepository
 from fastapi import HTTPException
 from app.schemas.response import ItemsResponse

@@ -2,7 +2,13 @@ from typing import Optional, Dict, Any
 
 
 class TodoModel:
-    def __init__(self, todo_id: str, title: str, description: Optional[str] = None, completed: bool = False):
+    def __init__(
+        self,
+        todo_id: str,
+        title: str,
+        description: Optional[str] = None,
+        completed: bool = False,
+    ):
         self.todo_id = todo_id
         self.title = title
         self.description = description

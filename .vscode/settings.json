@@ -3,9 +3,10 @@
   "files.exclude": {
     "**/__pycache__": true,
     "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
     "**/.pytest_cache": true
   },
-  // 保存時にblackで自動整形
+  // 保存時に自動整形
   "editor.formatOnSave": true,
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"

@@ -1,6 +1,5 @@
-from typing import List, Optional
+from typing import Optional
 from app.schemas.todo import Todo
-from app.models.todo import TodoModel
 from app.db import get_table
 from app.schemas.response import ItemsResponse
 

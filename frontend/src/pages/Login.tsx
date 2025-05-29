@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useGetUser, useCreateUser } from '../hooks/api'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import BackToTopButton from '../components/BackToTopButton'
 
 export default function Login() {

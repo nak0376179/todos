@@ -9,8 +9,6 @@ build/
 *.log
 
 # pipenv/poetry/venv
-Pipfile.lock
-poetry.lock
 .venv/
 env/
 venv/
@@ -29,18 +27,7 @@ htmlcov/
 **/node_modules/
 **/dist/
 **/.vite/
-**/.next/
-**/.turbo/
 **/build/
-
-# dotenv
-**/.env
-# **/.env.*
-
-# logs
-**/npm-debug.log*
-**/yarn-debug.log*
-**/yarn-error.log*
 
 # ---- Storybook / Vitest ----
 **/storybook-static/

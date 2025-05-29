@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export default function Root() {
   return (

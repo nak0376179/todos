@@ -1,18 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { within, userEvent } from 'storybook/test'
-import { MemoryRouter } from 'react-router-dom'
 import BackToTopButton from './BackToTopButton'
 
 const meta: Meta<typeof BackToTopButton> = {
   title: 'components/BackToTopButton',
   component: BackToTopButton,
-  decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    ),
-  ],
 }
 export default meta
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router'
 import Root from './pages/root'
 import UserRegister from './pages/UserRegister'
 import CreateGroup from './pages/CreateGroup'

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useCreateGroup } from '../hooks/api/group'
 import { Box, TextField, Button, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import BackToTopButton from '../components/BackToTopButton'
 
 export default function CreateGroup() {

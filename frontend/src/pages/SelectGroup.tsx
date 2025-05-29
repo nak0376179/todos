@@ -1,4 +1,4 @@
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router'
 import { useListGroupsByUser } from '../hooks/api/group_member'
 import { useGetGroup } from '../hooks/api/group'
 import { Box, Button, List, ListItem, ListItemText, Typography } from '@mui/material'

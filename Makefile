@@ -28,7 +28,7 @@ pytest:  ## バックエンドのpytestテストを実行します
 
 vitest:  ## フロントエンドのvitestテストを実行します
 	@echo "=== フロントエンドvitestテスト実行 ==="
-	cd frontend && npm run test
+	cd frontend && npm run test:ui
 
 build:  ## バックエンドのPythonコードをコンパイルします
 	@echo "=== バックエンドコンパイル ==="

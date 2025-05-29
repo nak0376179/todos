@@ -6,11 +6,37 @@
     "**/.ruff_cache": true,
     "**/.pytest_cache": true
   },
+
   // 保存時に自動整形
   "editor.formatOnSave": true,
+
+  // Python に関する設定
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
+
   // backendディレクトリをPythonのパスに追加
-  "python.analysis.extraPaths": ["backend"]
+  "python.analysis.extraPaths": ["backend"],
+
+  // JavaScript/TypeScript に関する設定
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ESLint を保存時に実行（フォーマット含む）
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+
+  // ESLint に対象言語を明示
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }

@@ -2,7 +2,6 @@ from app.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.schemas.user import UserCreate, UserRead
 from datetime import datetime
-import uuid
 
 
 class UserService:

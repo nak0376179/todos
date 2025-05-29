@@ -1,0 +1,38 @@
+# EditorConfig is awesome: https://editorconfig.org
+root = true
+
+# すべてのファイル共通ルール
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# インデント設定: デフォルトは 2スペース
+indent_style = space
+indent_size = 2
+
+# Python ファイル（backend 用）
+[*.py]
+indent_style = space
+indent_size = 4
+
+# JSON, YAML も整形対象
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+# Markdown はトレーリングスペース許可（例: `<br>` の代わり）
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefile や shell script は tab インデントを許可
+[Makefile]
+indent_style = tab
+
+[*.sh]
+indent_style = tab

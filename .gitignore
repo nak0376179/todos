@@ -1,0 +1,56 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# pipenv/poetry/venv
+Pipfile.lock
+poetry.lock
+.venv/
+env/
+venv/
+ENV/
+*.env
+*.env.*
+
+# mypy, pyright, coverage, etc
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.pyright/
+
+# ---- Node / React (Vite, Next.js, etc) ----
+**/node_modules/
+**/dist/
+**/.vite/
+**/.next/
+**/.turbo/
+**/build/
+
+# dotenv
+**/.env
+# **/.env.*
+
+# logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# ---- Storybook / Vitest ----
+**/storybook-static/
+**/coverage/
+**/.nyc_output/
+
+# ---- Editor / OS ----
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak

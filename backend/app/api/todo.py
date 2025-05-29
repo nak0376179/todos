@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, HTTPException
 from typing import List
 from app.schemas.todo import TodoCreate, TodoRead, TodoUpdate
@@ -28,7 +29,7 @@ def create_todo(body: TodoCreateRequest):
             group_id=body.group_id,
             title=body.title,
             description=body.description,
-            due_date=body.due_date,
+            due_date=datetime.fromisoformat(body.due_date) if body.due_date else None,
         ),
         owner_user_id=body.owner_user_id,
     )

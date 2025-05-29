@@ -1,14 +1,29 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import datetime
 
 
-class Todo(BaseModel):
-    todo_id: str
+class TodoCreate(BaseModel):
+    group_id: str
     title: str
     description: Optional[str] = None
-    completed: bool = False
+    due_date: Optional[datetime] = None
 
 
-class PostTodoResponse(BaseModel):
+class TodoRead(BaseModel):
     todo_id: str
-    message: str
+    group_id: str
+    title: str
+    description: Optional[str] = None
+    owner_user_id: str
+    due_date: Optional[datetime] = None
+    is_completed: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
+    is_completed: Optional[bool] = None

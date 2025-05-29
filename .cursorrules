@@ -1,66 +1,81 @@
 # .cursorrules
 
-## 技術選定・運用
+## 目的
 
-### フロントエンド
-- React + Vite + SWC + MUI + Vitest + Storybook + Tanstack Query + Jotai + axios
-- ルーティングはreact-router v7（Declarative Mode）
-- axiosのbaseURLや共通ヘッダはhooks/api/fetcher.tsで一元管理
-- 型インポートはimport typeで統一
-- API型・CRUD関数・tanstack queryフックはhooks/apiで集約
-- MUIのThemeProviderとNoto Sans JPフォントを全体に適用
-- backend APIの型・エラーレスポンスに合わせてフロントも型定義
-- pages配下のファイル名・パスはNext.js互換を意識
-- Storybook/テスト/開発用のAPIモックはMSW v2（httpハンドラ）で統一
-- Prettierはセミコロンなし・シングルクオート・printWidth 120で統一
-- 依存はfrontendディレクトリ内で管理（外部グローバルインストール禁止）
-- テスト・ストーリーもESLintでlint（plugin:vitest/recommended, plugin:storybook/recommended）
-- APIレスポンスはItemsResponse/MessageResponse型で統一し、テスト・StorybookのMSWモックも同じ形式で返す
+React + FastAPI + DynamoDB で TODOアプリを作成することで、開発環境や技術選定の検証をしたい。
+
+* メールアドレスで誰でもユーザー登録ができる（テストなので検証不要）。
+* ユーザーはグループをいくつでも作成できて、グループごとにtodoを管理でき、グループの管理者になる。
+* グループには別のユーザーのメールアドレスを入力することでユーザーをメンバーとして招待できる。
+* メンバーはユーザーを招待できない。
+
+### インフラ
+
+* バックエンドのDBはDynamoDBを利用すること
+* 開発時は LocalStack（Docker）が別途動作しているのでそれを使用すること。
+* テーブル構造とサンプルデータは https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/AppendixSampleTables.html にあわせること
+* LocalStack用エンドポイントは: DYNAMODB_ENDPOINT_URL=http://localhost:4566
+* AWS_REGIONは ap-northeast-1 とすること
 
 ### バックエンド
-- poetry+pyenvでFastAPI+Mangum+pydantic
-- LambdaデプロイはAWS SAM（zip形式）で行う
-- LocalStack（docker）をlocal環境で起動し、開発・テスト用のDynamoDB等として利用する
-- ruff, blackを導入し、Makefileで一括実行できるようにする
-- pytestで日本語関数名テスト
-- 型・エラー型はフロントと揃える
-- models（DB・永続化層の型）とschemas（API入出力用スキーマ）は分離
-- APIレスポンスはItemsResponse/MessageResponse型で統一
 
-### インフラ・共通
-- LocalStack（docker）をlocal環境で起動し、開発・テスト用のDynamoDB等として利用する
-- .pytest_cache, .mypy_cache, __pycache__は.gitignoreとVSCodeで非表示
+* **技術スタック**:
 
-## ディレクトリ・構成ルール
-- frontend/src/components: UIコンポーネントを配置
-- frontend/src/hooks/api: APIクライアント・型・カスタムフックを配置
-- frontend/src/layouts: レイアウト用コンポーネントを配置
-- frontend/src/pages: Next.js風にパスごとにページを配置（中身はcomponentsで実装）
-- backend/app/models: DB・永続化層の型を配置
-- backend/app/schemas: API入出力用のPydanticスキーマを配置
-- backend/app/api: FastAPIのルータを配置
-- backend/app/repositories, backend/app/services: リポジトリ・サービス層
+  * 使用技術: `FastAPI + Mangum + pydantic + boto3`
+  * デプロイ: AWS SAM を使い AWS Lambda（zip形式）でデプロイ
+  * 環境管理: `poetry + pyenv`
+
+* **構成・ルール**:
+
+  * pythonは3.11を使用すること
+  * API層: `app/api`
+  * リポジトリ・サービス層: `app/repositories`, `app/services`
+  * スキーマ設計: `app/models`（DB/永続層）と `app/schemas`（API入出力）を分離
+  * FastAPIのCORSミドルウェアは開発時はallow_origins=["*"]でOK
+  * テストはpytestを使用し（日本語関数名OK）、LocalStackを使用してテストを実施すること
+
+
+
+### フロントエンド
+
+* **技術スタック**:
+
+  * 使用技術: `React v18 + Vite + SWC + MUI v7 + Tanstack Query + Jotai + axios`
+  * ルーティング: `react-router v7`（Declarative Mode）
+
+* **構成・ルール**:
+
+  * `frontend/src/components`: UIコンポーネント
+  * `frontend/src/hooks/api`: APIクライアント・型・フック
+  * `frontend/src/layouts`: レイアウトコンポーネント
+  * `frontend/src/pages`: Next.js互換のページ構成（中身はcomponentsで実装）
+  * `hooks/api/fetcher.ts` に `axios` の `baseURL` や共通ヘッダーを集約
+  * `MUI` の `ThemeProvider` と `Noto Sans JP` を全体に適用
 
 ## テスト・Storybook・モック
-- フロントエンドのテストはVitest＋Testing Libraryで作成
-- Storybookストーリー・VitestテストともにMSW v2（httpハンドラ）でAPIモック
-- テスト・ストーリーもESLintでlint（plugin:vitest/recommended, plugin:storybook/recommended）
-- QueryClientProviderはテスト・Storybook両方で必ずラップ
-- vi.spyOn等の手動フックモックは原則禁止、API通信はMSWで統一
 
+* storybookは、`npx storybook@8 init --builder vite` で作成すること
+* フロントエンドのテストは `Vitest + Testing Library + Storybook v8 + MSW v2`
+* `QueryClientProvider` はテスト・Storybook 両方で必須ラップ
 
-## Lint・整形・依存
-- Prettierはセミコロンなし・シングルクオート・printWidth 120で統一
-- ESLintはテスト・ストーリーも含めて一元管理
-- ruffで保存時自動整形
-- 依存はfrontendディレクトリ内で管理（外部グローバルインストール禁止）
-- .envやAPI_BASE_URLの指定ミスに注意
-- backendとAPI型・エラー型を揃える
+## Lint・整形・依存管理
+
+* printWidth: 120
+* フロントエンドはeslint, prettier, バックエンドは ruff, black, mypy を使い、VSCode保存時に整形
+* フロントエンドはセミコロンなし、シングルクオート
+
+## Makefile
+
+* ルートにMakefileを作成する
+* make dev でフロントエンドとバックエンドを同時に起動する
+* make down でフロントエンドとバックエンドを停止する
+* make init-db で最低限のテーブル作成とデータ注入を実施する。
+* make test でテストを実施する。
+* make build でバックエンドのビルドを実施する。
+* make deploy でバックエンドのデプロイを実施する。
+* make clean でバックエンドのビルド成果物を削除する。
 
 ## 注意点
-- ディレクトリ作成やコマンド実行は必ずプロジェクトルートで行う
-- importパスの重複や循環参照に注意
-- linterエラー（型インポート等）は都度修正
-- .envやAPI_BASE_URLの指定ミスに注意
-- backendとAPI型・エラー型を揃える
- 
+
+* ディレクトリ作成は必ずプロジェクトのルートにcdしてから実施する
+* poetry は cd backendが必要なことを忘れないでほしい 

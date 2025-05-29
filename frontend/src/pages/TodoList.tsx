@@ -22,8 +22,9 @@ export default function TodoList() {
 
   useEffect(() => {
     if (groupId) {
-      api.get(`/groups/${groupId}`)
-        .then(res => setGroupName(res.data.name))
+      api
+        .get(`/groups/${groupId}`)
+        .then((res) => setGroupName(res.data.name))
         .catch(() => setGroupName(''))
     }
   }, [groupId])
@@ -40,7 +41,14 @@ export default function TodoList() {
     const userId = localStorage.getItem('user_id') || ''
     createTodo.mutate(
       { group_id: groupId, title, description, due_date: dueDate || undefined, owner_user_id: userId },
-      { onSuccess: () => { setTitle(''); setDescription(''); setDueDate(''); refetch() } }
+      {
+        onSuccess: () => {
+          setTitle('')
+          setDescription('')
+          setDueDate('')
+          refetch()
+        },
+      }
     )
   }
 
@@ -55,23 +63,17 @@ export default function TodoList() {
   return (
     <Box maxWidth={600} mx="auto" mt={8}>
       <BackToTopButton />
-      <Typography variant="h5" mb={2}>TODO一覧（{groupName}）</Typography>
+      <Typography variant="h5" mb={2}>
+        TODO一覧（{groupName}）
+      </Typography>
       <Box display="flex" gap={2} mb={2}>
-        <TextField
-          label="タイトル"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-        <TextField
-          label="説明"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-        />
+        <TextField label="タイトル" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <TextField label="説明" value={description} onChange={(e) => setDescription(e.target.value)} />
         <TextField
           label="期限"
           type="date"
           value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
+          onChange={(e) => setDueDate(e.target.value)}
           InputLabelProps={{ shrink: true }}
         />
         <Button variant="contained" onClick={handleAdd} disabled={!groupId || !title || !ownerUserId}>
@@ -79,20 +81,20 @@ export default function TodoList() {
         </Button>
       </Box>
       <List>
-        {todos?.map(todo => (
-          <ListItem key={todo.todo_id} secondaryAction={
-            <IconButton edge="end" onClick={() => handleDelete(todo.todo_id)}>
-              <DeleteIcon />
-            </IconButton>
-          }>
+        {todos?.map((todo) => (
+          <ListItem
+            key={todo.todo_id}
+            secondaryAction={
+              <IconButton edge="end" onClick={() => handleDelete(todo.todo_id)}>
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
             <Checkbox checked={todo.is_completed} onChange={() => handleToggle(todo.todo_id, todo.is_completed)} />
-            <ListItemText
-              primary={todo.title + (todo.is_completed ? '（完了）' : '')}
-              secondary={todo.description}
-            />
+            <ListItemText primary={todo.title + (todo.is_completed ? '（完了）' : '')} secondary={todo.description} />
           </ListItem>
         ))}
       </List>
     </Box>
   )
-} 
+}

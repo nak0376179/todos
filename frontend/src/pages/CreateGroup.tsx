@@ -28,13 +28,30 @@ export default function CreateGroup() {
   return (
     <Box maxWidth={400} mx="auto" mt={8}>
       <BackToTopButton />
-      <Typography variant="h5" mb={2}>グループ作成</Typography>
+      <Typography variant="h5" mb={2}>
+        グループ作成
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField label="グループ名" value={name} onChange={e => setName(e.target.value)} fullWidth required margin="normal" />
-        <TextField label="説明" value={description} onChange={e => setDescription(e.target.value)} fullWidth margin="normal" />
+        <TextField
+          label="グループ名"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          fullWidth
+          required
+          margin="normal"
+        />
+        <TextField
+          label="説明"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
         <TextField label="オーナーユーザーID" value={userId} fullWidth margin="normal" disabled />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>作成</Button>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          作成
+        </Button>
       </form>
     </Box>
   )
-} 
+}

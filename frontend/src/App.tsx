@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Root from './pages/root'
 import UserRegister from './pages/UserRegister'
@@ -19,4 +20,4 @@ export default function App() {
       </Routes>
     </BrowserRouter>
   )
-} 
+}

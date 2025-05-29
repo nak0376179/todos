@@ -16,7 +16,7 @@ export default function SelectGroup() {
   useEffect(() => {
     if (groups) {
       Promise.all(
-        groups.map(async g => {
+        groups.map(async (g) => {
           try {
             const res = await api.get(`/groups/${g.group_id}`)
             return { group_id: g.group_id, name: res.data.name }
@@ -24,9 +24,11 @@ export default function SelectGroup() {
             return { group_id: g.group_id, name: g.group_id }
           }
         })
-      ).then(arr => {
+      ).then((arr) => {
         const map: { [group_id: string]: string } = {}
-        arr.forEach(({ group_id, name }) => { map[group_id] = name })
+        arr.forEach(({ group_id, name }) => {
+          map[group_id] = name
+        })
         setGroupNames(map)
       })
     }
@@ -41,9 +43,11 @@ export default function SelectGroup() {
   return (
     <Box maxWidth={400} mx="auto" mt={8}>
       <BackToTopButton />
-      <Typography variant="h5" mb={2}>所属グループ選択</Typography>
+      <Typography variant="h5" mb={2}>
+        所属グループ選択
+      </Typography>
       <List>
-        {groups?.map(g => (
+        {groups?.map((g) => (
           <ListItem component="button" key={g.group_id} onClick={() => handleSelect(g.group_id)}>
             <ListItemText primary={groupNames[g.group_id] || g.group_id} secondary={g.role} />
           </ListItem>
@@ -51,4 +55,4 @@ export default function SelectGroup() {
       </List>
     </Box>
   )
-} 
+}

@@ -21,10 +21,13 @@ export default function Login() {
     if (user) {
       navigate(`/select-group?user_id=${userId}`)
     } else {
-      createUser.mutate({ email: userId }, {
-        onSuccess: () => navigate(`/select-group?user_id=${userId}`),
-        onError: () => setError('ログイン/登録に失敗しました')
-      })
+      createUser.mutate(
+        { email: userId },
+        {
+          onSuccess: () => navigate(`/select-group?user_id=${userId}`),
+          onError: () => setError('ログイン/登録に失敗しました'),
+        }
+      )
     }
     setUserId('')
   }
@@ -32,21 +35,17 @@ export default function Login() {
   return (
     <Box maxWidth={400} mx="auto" mt={8}>
       <BackToTopButton />
-      <Typography variant="h5" mb={2}>テスト用ログイン</Typography>
+      <Typography variant="h5" mb={2}>
+        テスト用ログイン
+      </Typography>
       <TextField
         label="ユーザーID（メールアドレス）"
         fullWidth
         margin="normal"
         value={inputId}
-        onChange={e => setInputId(e.target.value)}
+        onChange={(e) => setInputId(e.target.value)}
       />
-      <Button
-        variant="contained"
-        fullWidth
-        sx={{ mt: 2 }}
-        disabled={!inputId}
-        onClick={handleLogin}
-      >
+      <Button variant="contained" fullWidth sx={{ mt: 2 }} disabled={!inputId} onClick={handleLogin}>
         ログイン
       </Button>
       {error && (
@@ -56,4 +55,4 @@ export default function Login() {
       )}
     </Box>
   )
-} 
+}

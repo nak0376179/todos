@@ -10,4 +10,4 @@ export const api = axios.create({
 export const fetcher = async <T>(url: string, config?: object): Promise<T> => {
   const res = await api.get<T>(url, config)
   return res.data
-} 
+}

@@ -9,20 +9,22 @@ export default function UserRegister() {
 
   return (
     <Box maxWidth={400} mx="auto" mt={8}>
-      <Typography variant="h5" mb={2}>ユーザー登録</Typography>
+      <Typography variant="h5" mb={2}>
+        ユーザー登録
+      </Typography>
       <TextField
         label="メールアドレス"
         fullWidth
         margin="normal"
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
         label="名前（任意）"
         fullWidth
         margin="normal"
         value={name}
-        onChange={e => setName(e.target.value)}
+        onChange={(e) => setName(e.target.value)}
       />
       <Button
         variant="contained"
@@ -45,4 +47,4 @@ export default function UserRegister() {
       )}
     </Box>
   )
-} 
+}

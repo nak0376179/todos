@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom'
 export default function Root() {
   return (
     <Box maxWidth={400} mx="auto" mt={8} textAlign="center">
-      <Typography variant="h4" mb={4}>TODOアプリデモ</Typography>
+      <Typography variant="h4" mb={4}>
+        TODOアプリデモ
+      </Typography>
       <Stack spacing={2} direction="column" alignItems="center">
         <Button component={Link} to="/register" variant="contained">
           ユーザー登録へ
@@ -21,4 +23,4 @@ export default function Root() {
       </Stack>
     </Box>
   )
-} 
+}

@@ -20,4 +20,4 @@ export const useListGroupsByUser = (user_id: string) =>
       return res.data
     },
     enabled: !!user_id,
-  }) 
+  })

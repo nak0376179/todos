@@ -1,14 +1,20 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install init-db dev down pytest vitest build deploy clean storybook-test
+.PHONY: help install init-db dev down up stop pytest vitest build deploy clean storybook-test sam-local
 
 install:  ## 初期セットアップ（バックエンド・フロントエンド依存インストール）
 	@echo "=== 依存パッケージインストール ==="
 	cd backend && poetry install
 	cd frontend && npm install
 
-up: ## LocalStackをバックグラウンドで起動
-	docker compose up -d
+up: ## LocalStackをバックグラウンドで起動（既に起動していれば再起動）
+	@if docker compose ps | grep -q 'localstack' && docker compose ps | grep -q 'Up'; then \
+		echo '=== LocalStack再起動 ==='; \
+		docker compose restart localstack; \
+	else \
+		echo '=== LocalStack起動 ==='; \
+		docker compose up -d; \
+	fi
 
 init-db:  ## データベースの初期化を行います
 	@echo "=== データベース初期化 ==="
@@ -19,6 +25,8 @@ down: ## LocalStackコンテナを停止
 
 dev:  ## フロントエンドとバックエンドの開発サーバを起動します（DB初期化も実施）
 	@echo "=== 開発サーバ起動 ==="
+	-pkill -f "npm run dev" || true
+	-pkill -f "uvicorn app.main:app" || true
 	$(MAKE) init-db
 	cd frontend && npm run dev &
 	cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
@@ -37,12 +45,16 @@ vitest:  ## フロントエンドのvitestテストを実行します
 	cd frontend && npm run test:ui
 
 build:  ## バックエンドのPythonコードをコンパイルします
-	@echo "=== バックエンドコンパイル ==="
-	cd backend && poetry run python -m compileall app
+	@echo "=== requirements.txtエクスポート ==="
+	cd backend && poetry export --without-hashes -f requirements.txt -o requirements.txt
+	@echo "=== SAMビルド ==="
+	cd backend && sam build
 
-deploy:  ## デプロイ処理（AWS SAM用に別途記述してください）
-	@echo "=== デプロイ処理 ==="
-	@echo "デプロイ処理はAWS SAM用に別途記述してください"
+sam-local: ## SAMローカルAPIサーバを起動
+	cd backend && sam local start-api
+
+deploy:  ## SAMデプロイ処理
+	cd backend && sam deploy
 
 logs: ## LocalStackのログ表示
 	docker compose logs

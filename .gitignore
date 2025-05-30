@@ -44,3 +44,6 @@ htmlcov/
 
 # ---- localstack ----
 volume/
+
+
+backend/.aws-sam/

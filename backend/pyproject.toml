@@ -46,3 +46,5 @@ strict = true
 warn_unused_configs = true
 show_error_codes = true
 pretty = true
+
+[tool.poetry.dependencies]

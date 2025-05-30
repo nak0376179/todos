@@ -12,7 +12,10 @@ up: ## LocalStackをバックグラウンドで起動
 
 init-db:  ## データベースの初期化を行います
 	@echo "=== データベース初期化 ==="
-	cd backend && poetry run python scripts/init_db.py
+	cd backend && poetry run python ../infrastructure/init_db.py
+
+down: ## LocalStackコンテナを停止
+	docker compose down
 
 dev:  ## フロントエンドとバックエンドの開発サーバを起動します（DB初期化も実施）
 	@echo "=== 開発サーバ起動 ==="
@@ -20,11 +23,10 @@ dev:  ## フロントエンドとバックエンドの開発サーバを起動�
 	cd frontend && npm run dev &
 	cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-down:  ## 開発サーバを停止します
+stop:  ## 開発サーバを停止します
 	@echo "=== 開発サーバ停止 ==="
 	pkill -f "npm run dev" || true
 	pkill -f "uvicorn app.main:app" || true
-	docker compose down
 
 pytest:  ## バックエンドのpytestテストを実行します
 	@echo "=== バックエンドpytestテスト実行 ==="

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import user, group, group_member, todo, user_group
+
+from app.api import group, group_member, todo, user, user_group
 
 app = FastAPI()
 

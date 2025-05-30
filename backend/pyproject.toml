@@ -2,7 +2,6 @@
 name = "app"
 version = "0.1.0"
 description = ""
-readme = "README.md"
 requires-python = ">=3.11"
 packages = [
   { include = "app" }
@@ -29,3 +28,21 @@ mypy = "^1.16.0"
 boto3-stubs = "^1.38.25"
 httpx = "^0.28.1"
 
+[tool.black]
+line-length = 120
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-select = ["E", "F", "I"]
+ignore = ["F401"]  # 未使用のimportを無視
+fixable = ["ALL"]
+
+[tool.mypy]
+python_version = 3.11
+ignore_missing_imports = true
+strict = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true

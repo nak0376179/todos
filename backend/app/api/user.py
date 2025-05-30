@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 from app.schemas.user import UserCreate, UserRead
 from app.services.user_service import UserService
 

@@ -1,0 +1,2 @@
+{"user_id": "admin@example.com", "email": "admin@example.com", "name": "管理者", "created_at": "2024-06-01T00:00:00Z"}
+{"user_id": "member@example.com", "email": "member@example.com", "name": "メンバー", "created_at": "2024-06-01T00:00:00Z"}

@@ -1,16 +1,17 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException
 from typing import List
-from app.schemas.todo import TodoCreate, TodoRead, TodoUpdate
-from app.services.todo_service import TodoService
+
+from fastapi import APIRouter, HTTPException, Path
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/todos", tags=["todos"])
+from app.schemas.todo import TodoCreate, TodoRead, TodoUpdate
+from app.services.todo_service import TodoService
+
+router = APIRouter(prefix="/groups/{group_id}/todos", tags=["todos"])
 service = TodoService()
 
 
 class TodoCreateRequest(BaseModel):
-    group_id: str
     title: str
     description: str | None = None
     due_date: str | None = None
@@ -18,15 +19,15 @@ class TodoCreateRequest(BaseModel):
 
 
 @router.get("", response_model=List[TodoRead])
-def list_todos(group_id: str):
+def list_todos(group_id: str = Path(...)):
     return service.list_todos_by_group(group_id)
 
 
 @router.post("", response_model=TodoRead)
-def create_todo(body: TodoCreateRequest):
+def create_todo(group_id: str = Path(...), body: TodoCreateRequest = ...):
     return service.create_todo(
         TodoCreate(
-            group_id=body.group_id,
+            group_id=group_id,
             title=body.title,
             description=body.description,
             due_date=datetime.fromisoformat(body.due_date) if body.due_date else None,
@@ -36,22 +37,25 @@ def create_todo(body: TodoCreateRequest):
 
 
 @router.get("/{todo_id}", response_model=TodoRead)
-def get_todo(todo_id: str):
+def get_todo(group_id: str = Path(...), todo_id: str = Path(...)):
     todo = service.get_todo_by_id(todo_id)
-    if not todo:
+    if not todo or todo.group_id != group_id:
         raise HTTPException(status_code=404, detail="Not found")
     return todo
 
 
 @router.patch("/{todo_id}", response_model=TodoRead)
-def update_todo(todo_id: str, body: TodoUpdate):
+def update_todo(group_id: str = Path(...), todo_id: str = Path(...), body: TodoUpdate = ...):
     todo = service.update_todo(todo_id, body)
-    if not todo:
+    if not todo or todo.group_id != group_id:
         raise HTTPException(status_code=404, detail="Not found")
     return todo
 
 
 @router.delete("/{todo_id}")
-def delete_todo(todo_id: str):
+def delete_todo(group_id: str = Path(...), todo_id: str = Path(...)):
+    todo = service.get_todo_by_id(todo_id)
+    if not todo or todo.group_id != group_id:
+        raise HTTPException(status_code=404, detail="Not found")
     service.delete_todo(todo_id)
     return {"result": "ok"}

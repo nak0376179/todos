@@ -12,8 +12,7 @@ React + FastAPI + DynamoDB で TODOアプリを作成することで、開発環
 ### インフラ
 
 * バックエンドのDBはDynamoDBを利用すること
-* 開発時は LocalStack（Docker）が別途動作しているのでそれを使用すること。
-* テーブル構造とサンプルデータは https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/AppendixSampleTables.html にあわせること
+* 開発時は LocalStack（Docker）をdocker composeで用意すること
 * LocalStack用エンドポイントは: DYNAMODB_ENDPOINT_URL=http://localhost:4566
 * AWS_REGIONは ap-northeast-1 とすること
 
@@ -78,4 +77,4 @@ React + FastAPI + DynamoDB で TODOアプリを作成することで、開発環
 ## 注意点
 
 * ディレクトリ作成は必ずプロジェクトのルートにcdしてから実施する
-* poetry は cd backendが必要なことを忘れないでほしい 
+* poetry は cd backendが必要なことを忘れないでほしい

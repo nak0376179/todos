@@ -1,15 +1,15 @@
-import boto3
-from app.models.group import Group
-from typing import Optional
 import os
 from datetime import datetime
+from typing import Optional
+
+import boto3
+
+from app.models.group import Group
 
 DYNAMODB_ENDPOINT_URL = os.getenv("DYNAMODB_ENDPOINT_URL", "http://localhost:4566")
 AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
 
-dynamodb = boto3.resource(
-    "dynamodb", endpoint_url=DYNAMODB_ENDPOINT_URL, region_name=AWS_REGION
-)
+dynamodb = boto3.resource("dynamodb", endpoint_url=DYNAMODB_ENDPOINT_URL, region_name=AWS_REGION)
 GROUP_TABLE_NAME = "groups"
 
 

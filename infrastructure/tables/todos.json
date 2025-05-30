@@ -1,0 +1,10 @@
+{
+  "TableName": "todos",
+  "KeySchema": [
+    {"AttributeName": "todo_id", "KeyType": "HASH"}
+  ],
+  "AttributeDefinitions": [
+    {"AttributeName": "todo_id", "AttributeType": "S"}
+  ],
+  "BillingMode": "PAY_PER_REQUEST"
+}

@@ -1,7 +1,9 @@
+from typing import List
+
 from fastapi import APIRouter
+
 from app.repositories.group_member_repository import GroupMemberRepository
 from app.schemas.group_member import GroupMemberRead
-from typing import List
 
 router = APIRouter(tags=["user_groups"])
 group_member_repo = GroupMemberRepository()

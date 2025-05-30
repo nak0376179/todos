@@ -10,7 +10,7 @@
 - **フロントエンド**: React v18, Vite, MUI, Tanstack Query, Jotai, axios, react-router v7, Storybook
 - **バックエンド**: FastAPI, Mangum, pydantic, boto3, poetry, pytest
 - **DB**: DynamoDB（LocalStack でローカル動作）
-- **インフラ**: AWS SAM（Lambda デプロイ想定）
+- **CI/CD**: AWS SAM（Zip 形式で Lambda デプロイ想定）
 - **テスト**: Vitest（フロントエンド）、pytest（バックエンド）、Storybook Test Runner
 
 ---
@@ -29,9 +29,16 @@
 
 1. **依存インストール**
 
-   ```sh
-   make install
-   ```
+```sh
+cd backend
+pyenv install 3.11.12
+pyenv local 3.11.12
+PYTHON_PATH=$(pyenv which python)
+echo "Using python: $PYTHON_PATH"
+poetry env use $PYTHON_PATH
+cd ..
+make install
+```
 
 2. **開発サーバ起動（DB 初期化含む）**
 

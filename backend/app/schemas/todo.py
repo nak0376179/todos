@@ -4,14 +4,14 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class TodoCreate(BaseModel):
+class TodoCreateRequest(BaseModel):
     group_id: str
     title: str
     description: Optional[str] = None
     due_date: Optional[datetime] = None
 
 
-class TodoRead(BaseModel):
+class TodoReadResponse(BaseModel):
     todo_id: str
     group_id: str
     title: str
@@ -23,7 +23,7 @@ class TodoRead(BaseModel):
     updated_at: datetime
 
 
-class TodoUpdate(BaseModel):
+class TodoUpdateRequest(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     due_date: Optional[datetime] = None

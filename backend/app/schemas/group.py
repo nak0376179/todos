@@ -3,8 +3,10 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from app.models.group import GroupUser
 
-class GroupUser(BaseModel):
+
+class GroupUserResponse(BaseModel):
     user_id: str
     email: str
     user_name: str
@@ -12,17 +14,13 @@ class GroupUser(BaseModel):
     invited_at: datetime
 
 
-class GroupCreate(BaseModel):
+class GroupCreateResponse(BaseModel):
     group_name: str
 
 
-class GroupRead(BaseModel):
+class GroupReadResponse(BaseModel):
     group_id: str
     group_name: str
     owner_user_id: str
     created_at: datetime
     users: List[GroupUser]
-
-
-class GroupInDB(GroupRead):
-    pass

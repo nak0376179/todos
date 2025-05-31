@@ -5,7 +5,7 @@ from app.models.group import Group, GroupUser
 from app.models.user import UserGroup
 from app.repositories.group_repository import GroupRepository
 from app.repositories.user_repository import UserRepository
-from app.schemas.group import GroupCreate, GroupRead
+from app.schemas.group import GroupCreateResponse, GroupReadResponse
 
 
 class GroupService:
@@ -13,7 +13,7 @@ class GroupService:
         self.group_repo = GroupRepository()
         self.user_repo = UserRepository()
 
-    def create_group(self, group_name: str, owner_user_id: str) -> GroupRead:
+    def create_group(self, group_name: str, owner_user_id: str) -> GroupCreateResponse:
         now = datetime.now(timezone.utc)
         group = Group(
             group_id=str(uuid.uuid4()),
@@ -46,9 +46,9 @@ class GroupService:
             self.user_repo.update_user(owner_user)
         else:
             self.group_repo.create_group(group)
-        return GroupRead(**group.model_dump())
+        return GroupCreateResponse(**group.model_dump())
 
-    def invite_member(self, group_id: str, user_id: str, role: str = "member") -> GroupRead:
+    def invite_member(self, group_id: str, user_id: str, role: str = "member") -> GroupReadResponse:
         now = datetime.utcnow()
         group = self.group_repo.get_group_by_id(group_id)
         user = self.user_repo.get_user_by_id(user_id)
@@ -75,4 +75,4 @@ class GroupService:
             )
             user.groups.append(user_group)
             self.user_repo.update_user(user)
-        return GroupRead(**group.model_dump())
+        return GroupReadResponse(**group.model_dump())

@@ -13,6 +13,7 @@ import { DevLogProvider } from '@/components/DevLogContext'
 const queryClient = new QueryClient()
 
 export default function App() {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
   return (

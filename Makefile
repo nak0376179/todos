@@ -45,6 +45,10 @@ vitest:  ## フロントエンドのvitestテストを実行します
 	@echo "=== フロントエンドvitestテスト実行 ==="
 	cd frontend && npm run test:ui
 
+storybook:  ## フロントエンドのstorybookを実行します
+	@echo "=== フロントエンドstorybook実行 ==="
+	cd frontend && npm run storybook
+
 build:  ## バックエンドのPythonコードをコンパイルします
 	@echo "=== requirements.txtエクスポート ==="
 	cd backend && poetry export --without-hashes -f requirements.txt -o requirements.txt

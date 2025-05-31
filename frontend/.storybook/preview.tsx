@@ -2,17 +2,23 @@ import type { Preview } from '@storybook/react-vite'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router'
 import React from 'react'
+import { DevLogProvider } from '../src/components/DevLogContext'
+import { Provider as JotaiProvider } from 'jotai'
 
 const queryClient = new QueryClient()
 
 const preview: Preview = {
   decorators: [
     (Story: any) => (
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <Story />
-        </MemoryRouter>
-      </QueryClientProvider>
+      <JotaiProvider>
+        <QueryClientProvider client={queryClient}>
+          <DevLogProvider>
+            <MemoryRouter>
+              <Story />
+            </MemoryRouter>
+          </DevLogProvider>
+        </QueryClientProvider>
+      </JotaiProvider>
     ),
   ],
   parameters: {

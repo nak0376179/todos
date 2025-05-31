@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { within, userEvent } from 'storybook/test'
 import { http, HttpResponse } from 'msw'
 import Login from './Login'
@@ -38,30 +38,23 @@ export const 既存ユーザーログイン成功: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = await canvas.findByLabelText('ユーザーID（メールアドレス）')
+    await userEvent.clear(input)
     await userEvent.type(input, userId)
     const button = await canvas.findByRole('button', { name: 'ログイン' })
     await userEvent.click(button)
   },
 }
 
-export const 新規登録成功: Story = {
-  parameters: {
-    msw: {
-      handlers: [
-        http.get('/users/:user_id', () => {
-          return new HttpResponse(null, { status: 404 })
-        }),
-        http.post('/users', () => {
-          return HttpResponse.json(userResponse, { status: 200 })
-        }),
-      ],
-    },
-  },
+export const バリデーションエラー: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const input = await canvas.findByLabelText('ユーザーID（メールアドレス）')
-    await userEvent.type(input, userId)
+    await userEvent.clear(input)
+    await userEvent.type(input, 'invalid-email')
     const button = await canvas.findByRole('button', { name: 'ログイン' })
     await userEvent.click(button)
+
+    // エラーメッセージの確認
+    await canvas.findByText('有効なメールアドレスを入力してください')
   },
 }

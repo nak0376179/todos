@@ -1,13 +1,14 @@
-from app.repositories.todo_repository import TodoRepository
-from app.models.todo import Todo
-from app.schemas.todo import TodoCreate, TodoRead, TodoUpdate
-from datetime import datetime
 import uuid
+from datetime import datetime
 from typing import List, Optional
+
+from app.models.todo import Todo
+from app.repositories.todo_repository import TodoRepository
+from app.schemas.todo import TodoCreate, TodoRead, TodoUpdate
 
 
 class TodoService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.repo = TodoRepository()
 
     def create_todo(self, todo_create: TodoCreate, owner_user_id: str) -> TodoRead:

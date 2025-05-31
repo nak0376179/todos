@@ -149,8 +149,8 @@ export interface components {
     schemas: {
         /** GroupCreateRequest */
         GroupCreateRequest: {
-            /** Name */
-            name: string;
+            /** Group Name */
+            group_name: string;
             /** Owner User Id */
             owner_user_id: string;
         };

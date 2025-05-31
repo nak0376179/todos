@@ -48,7 +48,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               height: 'calc(100vh - 64px)',
             },
           }}
-          PaperProps={{ sx: { top: '64px', height: 'calc(100vh - 64px)' } }}
+          slotProps={{ paper: { sx: { top: '64px', height: 'calc(100vh - 64px)' } } }}
         >
           <List>
             <ListItem
@@ -56,7 +56,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               href={groupId ? `/groups/${groupId}/todos` : '/'}
               sx={{ '&:hover': { bgcolor: '#37474f' } }}
             >
-              <ListItemText primary="TODO管理" primaryTypographyProps={{ fontWeight: 'bold', color: '#fff' }} />
+              <ListItemText primary="TODO管理" slotProps={{ primary: { fontWeight: 'bold', color: '#fff' } }} />
             </ListItem>
             {/* 他の管理メニューがあればここに追加 */}
           </List>

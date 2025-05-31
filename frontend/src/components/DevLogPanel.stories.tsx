@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import DevLogPanel from './DevLogPanel'
 import { Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { DevLogProvider, useDevLog } from '@/components/DevLogContext'
+import { useDevLog } from '@/components/DevLogContext'
 
 const meta: Meta<typeof DevLogPanel> = {
   title: 'components/DevLogPanel',
@@ -11,9 +11,6 @@ const meta: Meta<typeof DevLogPanel> = {
     docs: {
       description: {
         component: '開発者向けのリアルタイムログパネル。操作ログやエラーを画面右下に固定表示して可視化します。',
-      },
-      story: {
-        height: '200px',
       },
     },
   },
@@ -70,11 +67,6 @@ export const WithPushLogButton: Story = {
       )
     }
 
-    return (
-      <DevLogProvider>
-        <WithPushLogButtonContent />
-      </DevLogProvider>
-    )
+    return <WithPushLogButtonContent />
   },
-  play: async ({ canvasElement }) => {},
 }

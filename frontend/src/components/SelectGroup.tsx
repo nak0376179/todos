@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Box, Button, Typography, Paper, List, ListItem, ListItemText } from '@mui/material'
+import { useState } from 'react'
+import { Box, Typography, Paper, List, ListItem, ListItemText } from '@mui/material'
 import { useNavigate } from 'react-router'
 import { useAtom } from 'jotai'
 import { groupIdAtom, userIdAtom } from '@/stores/user'
@@ -10,7 +10,7 @@ export default function SelectGroup() {
   const navigate = useNavigate()
   const { pushLog, pushErrorLog } = useDevLog()
   const [errorMsg, setErrorMsg] = useState('')
-  const [_, setGroupId] = useAtom(groupIdAtom)
+  const [, setGroupId] = useAtom(groupIdAtom)
   const [userId] = useAtom(userIdAtom)
   const { data: groups, isLoading } = useListGroups(userId)
 

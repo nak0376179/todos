@@ -9,26 +9,27 @@ from app.schemas.group import GroupCreate, GroupRead
 
 
 class GroupService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.group_repo = GroupRepository()
         self.user_repo = UserRepository()
 
-    def create_group(self, group_create: GroupCreate, owner_user_id: str) -> GroupRead:
+    def create_group(self, group_name: str, owner_user_id: str) -> GroupRead:
         now = datetime.now(timezone.utc)
         group = Group(
             group_id=str(uuid.uuid4()),
-            name=group_create.name,
+            group_name=group_name,
             owner_user_id=owner_user_id,
             created_at=now,
             users=[],
         )
         # 管理者として自分を追加
         owner_user = self.user_repo.get_user_by_id(owner_user_id)
+
         if owner_user:
             group_user = GroupUser(
                 user_id=owner_user.user_id,
                 email=owner_user.email,
-                name=owner_user.name or owner_user.user_id,
+                user_name=owner_user.user_name or owner_user.user_id,
                 role="admin",
                 invited_at=now,
             )
@@ -37,6 +38,7 @@ class GroupService:
             # ユーザー側にもグループ追加
             user_group = UserGroup(
                 group_id=group.group_id,
+                group_name=group.group_name,
                 role="admin",
                 invited_at=now,
             )
@@ -46,7 +48,7 @@ class GroupService:
             self.group_repo.create_group(group)
         return GroupRead(**group.model_dump())
 
-    def invite_member(self, group_id: str, user_id: str, role: str = "member"):
+    def invite_member(self, group_id: str, user_id: str, role: str = "member") -> GroupRead:
         now = datetime.utcnow()
         group = self.group_repo.get_group_by_id(group_id)
         user = self.user_repo.get_user_by_id(user_id)
@@ -57,7 +59,7 @@ class GroupService:
             group_user = GroupUser(
                 user_id=user.user_id,
                 email=user.email,
-                name=user.name or user.user_id,
+                user_name=user.user_name or user.user_id,
                 role=role,
                 invited_at=now,
             )
@@ -68,8 +70,9 @@ class GroupService:
             user_group = UserGroup(
                 group_id=group_id,
                 role=role,
+                group_name=group.group_name,
                 invited_at=now,
             )
             user.groups.append(user_group)
             self.user_repo.update_user(user)
-        return group
+        return GroupRead(**group.model_dump())

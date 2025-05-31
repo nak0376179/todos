@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useRef, useEffect } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState } from 'react'
 import DevLogPanel from '@/components/DevLogPanel'
 
 export type DevLog = { type: string; message: string; time: string }
@@ -14,27 +15,16 @@ interface DevLogContextType {
 
 const DevLogContext = createContext<DevLogContextType | undefined>(undefined)
 
-// ログメッセージを整形するユーティリティ
-function formatHttpLog(message: string): string {
-  // 例: [ユーザー取得] GET /users/admin%40example.com HTTP/1.1" 200 OK
-  // → [ユーザー取得] /users/admin%40example.com
-  const match = message.match(/^\[([^\]]+)\]\s+(GET|POST|PATCH|PUT|DELETE)\s+([^\s]+)(?:\s+HTTP.*)?/)
-  if (match) {
-    return `[${match[1]}] ${match[3]}`
-  }
-  return message
-}
-
 export const DevLogProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const env = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_ENV
-  const isDev = env === 'local' || env === 'devel'
+  // const env = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_ENV
+  // const isDev = env === 'local' || env === 'devel'
   const [logs, setLogs] = useState<DevLog[]>([])
-  const [open, setOpen] = useState(isDev)
+  const [open, setOpen] = useState(false)
 
   const pushLog = (type: string, message: string) => {
-    const formatted = formatHttpLog(message)
-    setLogs((prev) => [...prev, { type, message: formatted, time: new Date().toLocaleTimeString() }])
+    setLogs((prev) => [...prev, { type, message: message, time: new Date().toLocaleTimeString() }])
   }
   const pushErrorLog = (message: string) => {
     setLogs((prev) => [...prev, { type: 'エラー', message, time: new Date().toLocaleTimeString() }])
@@ -46,7 +36,7 @@ export const DevLogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   return (
     <DevLogContext.Provider value={{ pushLog, pushErrorLog, open, openPanel, closePanel, clear }}>
       {children}
-      <DevLogPanel logs={logs} open={open} onClose={closePanel} onClear={clear} />
+      <DevLogPanel logs={logs} open={open} onClose={closePanel} onClear={clear} onOpen={openPanel} />
     </DevLogContext.Provider>
   )
 }

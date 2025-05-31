@@ -1,25 +1,49 @@
-import { useState } from 'react'
 import { Box, Button, TextField, Typography, Paper, InputAdornment, Avatar, Link as MuiLink } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import PersonIcon from '@mui/icons-material/Person'
 import { useGetUser, useCreateUser } from '@/hooks/api/user'
 import { useNavigate, Link as RouterLink } from 'react-router'
 import { useAtom } from 'jotai'
 import { userIdAtom } from '@/stores/user'
+import { useEffect, useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+// Zod スキーマ定義
+const schema = z.object({
+  email: z.string().email('有効なメールアドレスを入力してください'),
+})
+
+type FormData = z.infer<typeof schema>
 
 export default function Login() {
-  const [inputId, setInputId] = useState('admin@example.com')
   const [userId, setUserId] = useAtom(userIdAtom)
   const [error, setError] = useState('')
-  const { data: user, isFetched } = useGetUser(userId)
-  const createUser = useCreateUser()
   const navigate = useNavigate()
 
-  const handleLogin = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: 'admin@example.com',
+    },
+  })
+
+  const { data: user, isFetched } = useGetUser(userId)
+  const createUser = useCreateUser()
+
+  const onSubmit = (data: FormData) => {
     setError('')
-    setUserId(inputId)
+    setUserId(data.email)
   }
 
-  if (userId && isFetched) {
+  useEffect(() => {
+    if (!userId || !isFetched) return
+
     if (user) {
       navigate(`/select-group?user_id=${userId}`)
     } else {
@@ -31,7 +55,7 @@ export default function Login() {
         }
       )
     }
-  }
+  }, [userId, isFetched, user, navigate, createUser])
 
   return (
     <Box
@@ -53,29 +77,43 @@ export default function Login() {
         <Typography variant="body2" color="text.secondary" mb={3}>
           メールアドレスでログインまたは自動登録
         </Typography>
-        <TextField
-          label="ユーザーID（メールアドレス）"
-          fullWidth
-          margin="normal"
-          value={inputId}
-          onChange={(e) => setInputId(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Avatar src="/src/assets/react.svg" sx={{ width: 24, height: 24, bgcolor: 'transparent' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{ mt: 2, fontWeight: 'bold', fontSize: 18, py: 1.2, borderRadius: 2 }}
-          disabled={!inputId}
-          onClick={handleLogin}
-        >
-          ログイン
-        </Button>
+
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          {/* Controller を使用して MUI の TextField を連携 */}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="ユーザーID（メールアドレス）"
+                fullWidth
+                margin="normal"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            )}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ mt: 2, fontWeight: 'bold', fontSize: 18, py: 1.2, borderRadius: 2 }}
+          >
+            ログイン
+          </Button>
+        </form>
+
         <MuiLink
           component={RouterLink}
           to="/register"
@@ -84,6 +122,7 @@ export default function Login() {
         >
           アカウント新規作成はこちら
         </MuiLink>
+
         {error && (
           <Typography color="error.main" mt={2}>
             {error}

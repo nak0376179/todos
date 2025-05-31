@@ -1,18 +1,19 @@
-from app.repositories.user_repository import UserRepository
-from app.models.user import User
-from app.schemas.user import UserCreate, UserRead
 from datetime import datetime
+
+from app.models.user import User
+from app.repositories.user_repository import UserRepository
+from app.schemas.user import UserCreate, UserRead
 
 
 class UserService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.repo = UserRepository()
 
-    def create_user(self, user_create: UserCreate) -> UserRead:
+    def create_user(self, user_create: UserCreate) -> UserRead | None:
         user = User(
             user_id=user_create.email,
             email=user_create.email,
-            name=user_create.name,
+            user_name=user_create.name,  # Changed from user_name to name to match schema
             created_at=datetime.utcnow(),
         )
         self.repo.create_user(user)

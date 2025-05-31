@@ -14,7 +14,7 @@ USER_TABLE_NAME = "users"
 
 
 class UserRepository:
-    def __init__(self):
+    def __init__(self) -> None:
         self.table = dynamodb.Table(USER_TABLE_NAME)
 
     def create_user(self, user: User) -> User:

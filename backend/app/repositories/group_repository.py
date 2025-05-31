@@ -14,7 +14,7 @@ GROUP_TABLE_NAME = "groups"
 
 
 class GroupRepository:
-    def __init__(self):
+    def __init__(self) -> None:
         self.table = dynamodb.Table(GROUP_TABLE_NAME)
 
     def create_group(self, group: Group) -> Group:

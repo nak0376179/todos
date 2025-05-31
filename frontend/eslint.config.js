@@ -1,40 +1,62 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from '@eslint/js'
 import globals from 'globals'
+import tseslint from 'typescript-eslint'
+import pluginReact from 'eslint-plugin-react'
+import { defineConfig } from 'eslint/config'
+import storybook from 'eslint-plugin-storybook'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import prettier from 'eslint-plugin-prettier'
-import eslintConfigPrettier from 'eslint-config-prettier'
-import tseslint from 'typescript-eslint'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 
-export default [// TypeScript + React 用設定
-{ ignores: ['dist', 'node_modules'] }, {
-  files: ['**/*.{ts,tsx}'],
-  languageOptions: {
-    parser: tseslint.parser,
-    parserOptions: {
-      project: './tsconfig.json', // プロジェクト直下に tsconfig.json が必要
-      tsconfigRootDir: process.cwd(),
-      sourceType: 'module',
+export default defineConfig([
+  // 無視するファイル/ディレクトリ
+  {
+    ignores: [
+      'vitest.shims.d.ts',
+      'vite.config.js',
+      'vitest.workspace.js',
+      '.storybook/*',
+      'vitest.config.ts',
+      'eslint.config.js',
+    ],
+  },
+
+  // JavaScript/TypeScriptファイル共通設定
+  {
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
-    globals: globals.browser,
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: process.cwd(),
+        sourceType: 'module',
+      },
+      globals: globals.browser,
+    },
   },
-  plugins: {
-    '@typescript-eslint': tseslint.plugin,
-    'react-hooks': reactHooks,
-    'react-refresh': reactRefresh,
-    prettier: prettier,
+
+  // 推奨設定の読み込み（typescript-eslint、React、React Hooks、Vite対応のReact Refresh、Prettier、Storybook）
+  ...tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  reactHooks.configs['recommended-latest'],
+  reactRefresh.configs.vite,
+  eslintConfigPrettier,
+  ...storybook.configs['flat/recommended'],
+
+  // カスタムルールの追加
+  {
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'storybook/prefer-pascal-case': 'off', // 日本語テスト名を許可するため
+    },
   },
-  rules: {
-    ...js.configs.recommended.rules,
-    ...tseslint.configs.recommended.rules,
-    ...reactHooks.configs.recommended.rules,
-    ...eslintConfigPrettier.rules,
-    'prettier/prettier': 'warn',
-    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    'no-unused-vars': 'off', // JS側ルールを無効にし、
-    '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^[A-Z_]' }], // TS側で管理
-  },
-}, ...storybook.configs["flat/recommended"], ...storybook.configs["flat/recommended"], ...storybook.configs["flat/recommended"]];
+])

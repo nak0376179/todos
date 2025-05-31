@@ -58,6 +58,7 @@ type DevLogPanelProps = {
   onClear: () => void
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
 
@@ -68,8 +69,6 @@ const MAX_WIDTH = 600
 const MAX_HEIGHT = 600
 
 export default function DevLogPanel({ logs, open, onClose, onOpen, onClear }: DevLogPanelProps) {
-  if (!isDev) return null
-
   const logEndRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const [dragging, setDragging] = useState(false)
@@ -160,6 +159,7 @@ export default function DevLogPanel({ logs, open, onClose, onOpen, onClear }: De
       window.removeEventListener('mousemove', onDrag)
       window.removeEventListener('mouseup', onDragEnd)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging, offset, size.width, size.height])
 
   useEffect(() => {
@@ -174,7 +174,10 @@ export default function DevLogPanel({ logs, open, onClose, onOpen, onClear }: De
       window.removeEventListener('mousemove', onResize)
       window.removeEventListener('mouseup', onResizeEnd)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resizing])
+
+  if (!isDev) return null
 
   return (
     <>

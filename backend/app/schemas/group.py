@@ -13,7 +13,7 @@ class GroupUser(BaseModel):
 
 
 class GroupCreate(BaseModel):
-    name: str
+    group_name: str
 
 
 class GroupRead(BaseModel):

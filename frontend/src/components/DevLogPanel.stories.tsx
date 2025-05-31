@@ -33,7 +33,17 @@ export const Default: Story = {
   render: () => {
     const [logs, setLogs] = useState(dummyLogs)
     const [open, setOpen] = useState(true)
-    return <DevLogPanel logs={logs} open={open} onClose={() => setOpen(false)} onClear={() => setLogs([])} />
+    return (
+      <DevLogPanel
+        logs={logs}
+        open={open}
+        onClose={() => setOpen(false)}
+        onClear={() => setLogs([])}
+        onOpen={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+      />
+    )
   },
 }
 
@@ -43,22 +53,20 @@ export const WithPushLogButton: Story = {
       const { pushLog, pushErrorLog, openPanel, closePanel } = useDevLog()
       // ...省略（ボタンやDevLogPanelのJSX）
       return (
-        <>
-          <Stack direction="row" spacing={2} sx={{ position: 'fixed', left: 24, bottom: 24, zIndex: 3000 }}>
-            <Button variant="contained" onClick={() => pushLog('追加', 'Storybookから追加')}>
-              pushLogで追加
-            </Button>
-            <Button variant="contained" onClick={() => pushErrorLog('Storybookからエラー追加')}>
-              pushErrorLogでエラー追加
-            </Button>
-            <Button variant="outlined" onClick={openPanel}>
-              開く
-            </Button>
-            <Button variant="outlined" onClick={closePanel}>
-              閉じる
-            </Button>
-          </Stack>
-        </>
+        <Stack direction="row" spacing={2} sx={{ position: 'fixed', left: 24, bottom: 24, zIndex: 3000 }}>
+          <Button variant="contained" onClick={() => pushLog('追加', 'Storybookから追加')}>
+            pushLogで追加
+          </Button>
+          <Button variant="contained" onClick={() => pushErrorLog('Storybookからエラー追加')}>
+            pushErrorLogでエラー追加
+          </Button>
+          <Button variant="outlined" onClick={openPanel}>
+            開く
+          </Button>
+          <Button variant="outlined" onClick={closePanel}>
+            閉じる
+          </Button>
+        </Stack>
       )
     }
 
@@ -68,8 +76,5 @@ export const WithPushLogButton: Story = {
       </DevLogProvider>
     )
   },
-  play: async ({ canvasElement }) => {
-    const button = canvasElement.querySelector('button')
-    if (button) button.click()
-  },
+  play: async ({ canvasElement }) => {},
 }

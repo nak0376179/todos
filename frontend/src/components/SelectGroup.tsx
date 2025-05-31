@@ -1,75 +1,57 @@
-import { useSearchParams, useNavigate } from 'react-router'
-import { useListGroupsByUser } from '@/hooks/api/group_member'
-import { Box, Button, List, ListItem, ListItemText, Typography, Paper, Divider } from '@mui/material'
-import GroupIcon from '@mui/icons-material/Group'
+import React, { useState } from 'react'
+import { Box, Button, Typography, Paper, List, ListItem, ListItemText } from '@mui/material'
+import { useNavigate } from 'react-router'
 import { useAtom } from 'jotai'
-import { userIdAtom, groupIdAtom } from '@/stores/user'
+import { groupIdAtom, userIdAtom } from '@/stores/user'
+import { useListGroups } from '@/hooks/api/group'
+import { useDevLog } from '@/components/DevLogContext'
 
 export default function SelectGroup() {
-  const [userId, setUserId] = useAtom(userIdAtom)
-  const [, setGroupId] = useAtom(groupIdAtom)
-  const { data: groups } = useListGroupsByUser(userId)
   const navigate = useNavigate()
+  const { pushLog, pushErrorLog } = useDevLog()
+  const [errorMsg, setErrorMsg] = useState('')
+  const [_, setGroupId] = useAtom(groupIdAtom)
+  const [userId] = useAtom(userIdAtom)
+  const { data: groups, isLoading } = useListGroups(userId)
 
-  const handleSelect = (group_id: string) => {
-    setUserId(userId)
-    setGroupId(group_id)
-    navigate(`/groups/${group_id}/todos`)
+  const handleSelect = (groupId: string, groupName: string) => {
+    try {
+      setGroupId(groupId)
+      pushLog('グループ選択', `グループ「${groupName}」を選択`)
+      navigate(`/groups/${groupId}/todos`)
+    } catch (e: any) {
+      setErrorMsg('グループ選択に失敗しました')
+      pushErrorLog(`グループ選択失敗: ${e?.message || 'unknown error'}`)
+    }
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Paper elevation={8} sx={{ p: 5, maxWidth: 400, width: '100%', borderRadius: 3, textAlign: 'center' }}>
-        <GroupIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-        <Typography variant="h4" fontWeight="bold" mb={2} color="primary.main">
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Paper elevation={4} sx={{ p: 4, minWidth: 320 }}>
+        <Typography variant="h5" fontWeight="bold" mb={2} textAlign="center">
           グループ選択
         </Typography>
-        <Typography variant="body2" color="text.secondary" mb={3}>
-          所属グループを選択してください
-        </Typography>
-        <List sx={{ mb: 3, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
-          {groups?.length ? (
-            groups.map((g: { group_id: string; role: string }, idx: number) => (
-              <>
-                <ListItem
-                  component="button"
-                  key={g.group_id}
-                  onClick={() => handleSelect(g.group_id)}
-                  sx={{
-                    borderRadius: 2,
-                    mb: 1,
-                    boxShadow: 1,
-                    bgcolor: '#f5fafd',
-                    '&:hover': { bgcolor: '#e3f2fd' },
-                  }}
-                >
-                  <ListItemText primary={<span style={{ fontWeight: 600 }}>{g.group_id}</span>} secondary={g.role} />
-                </ListItem>
-                {idx < groups.length - 1 && <Divider />}
-              </>
-            ))
-          ) : (
-            <Typography color="text.secondary" sx={{ my: 2 }}>
-              グループがありません
-            </Typography>
-          )}
-        </List>
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ mt: 2, fontWeight: 'bold', borderRadius: 2 }}
-          onClick={() => navigate(`/group?user_id=${userId}`)}
-        >
-          グループ新規作成
-        </Button>
+        {errorMsg && (
+          <Typography color="error" fontSize={14} mb={1}>
+            {errorMsg}
+          </Typography>
+        )}
+        {isLoading ? (
+          <Typography color="text.secondary">読み込み中...</Typography>
+        ) : (
+          <List>
+            {groups?.map((g: any) => (
+              <ListItem
+                key={g.group_id}
+                component="button"
+                onClick={() => handleSelect(g.group_id, g.group_name)}
+                sx={{ cursor: 'pointer' }}
+              >
+                <ListItemText primary={g.group_name} />
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Paper>
     </Box>
   )

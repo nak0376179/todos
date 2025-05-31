@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { useCreateUser } from '../hooks/api'
+import { useCreateUser } from '@/hooks/api/user'
 
 export default function UserRegister() {
   const [email, setEmail] = useState('')
@@ -31,7 +31,7 @@ export default function UserRegister() {
         fullWidth
         sx={{ mt: 2 }}
         disabled={isPending || !email}
-        onClick={() => mutate({ email, name: name || undefined })}
+        onClick={() => mutate({ body: { email, name: name || undefined } })}
       >
         登録
       </Button>

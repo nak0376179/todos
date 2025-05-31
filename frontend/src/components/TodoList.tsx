@@ -19,8 +19,9 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import { useListTodos, useCreateTodo, useDeleteTodo, useUpdateTodo } from '@/hooks/api'
-import { useNavigate } from 'react-router'
+import { useListTodos, useCreateTodo, useDeleteTodo, useUpdateTodo } from '@/hooks/api/todo'
+import { useGetGroup } from '@/hooks/api/group'
+import { useNavigate } from 'react-router-dom'
 import AdminLayout from '@/layouts/AdminLayout'
 import { useAtom } from 'jotai'
 import { userIdAtom, groupIdAtom } from '@/stores/user'
@@ -32,11 +33,11 @@ export default function TodoList() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [dueDate, setDueDate] = useState('')
+  const { data: group } = useGetGroup(groupId)
   const { data: todos, refetch, isLoading } = useListTodos(groupId)
   const createTodo = useCreateTodo()
   const deleteTodo = useDeleteTodo()
   const updateTodo = useUpdateTodo()
-  const [groupName, setGroupName] = useState('')
   const navigate = useNavigate()
 
   // 開発者ログ管理
@@ -58,7 +59,17 @@ export default function TodoList() {
 
   const handleAdd = () => {
     createTodo.mutate(
-      { group_id: groupId, title, description, due_date: dueDate || undefined, owner_user_id: ownerUserId },
+      {
+        params: {
+          path: { group_id: groupId },
+        },
+        body: {
+          title,
+          description,
+          due_date: dueDate || undefined,
+          owner_user_id: ownerUserId,
+        },
+      },
       {
         onSuccess: () => {
           setTitle('')
@@ -78,7 +89,11 @@ export default function TodoList() {
 
   const handleDelete = (todo_id: string) => {
     deleteTodo.mutate(
-      { group_id: groupId, todo_id },
+      {
+        params: {
+          path: { group_id: groupId, todo_id },
+        },
+      },
       {
         onSuccess: () => {
           refetch()
@@ -95,7 +110,14 @@ export default function TodoList() {
 
   const handleToggle = (todo_id: string, is_completed: boolean) => {
     updateTodo.mutate(
-      { group_id: groupId, todo_id, is_completed: !is_completed },
+      {
+        params: {
+          path: { group_id: groupId, todo_id },
+        },
+        body: {
+          is_completed: !is_completed,
+        },
+      },
       {
         onSuccess: () => {
           refetch()
@@ -125,7 +147,7 @@ export default function TodoList() {
       >
         <Paper elevation={6} sx={{ width: '100%', p: 2, borderRadius: 3 }}>
           <Typography variant="h4" fontWeight="bold" mb={2} color="primary.main" textAlign="center">
-            TODO管理（{groupName}）
+            TODO管理（{group?.group_name}）
           </Typography>
           <Box display="flex" gap={2} mb={2}>
             <TextField
@@ -222,12 +244,6 @@ export default function TodoList() {
             </Stack>
           ) : (
             <Box sx={{ py: 6, textAlign: 'center', color: 'text.secondary' }}>
-              <img
-                src="https://mui.com/static/branding/illustrations/empty-state.svg"
-                alt="empty"
-                width={180}
-                style={{ opacity: 0.7, marginBottom: 16 }}
-              />
               <Typography variant="h6" fontWeight="bold">
                 TODOがありません
               </Typography>

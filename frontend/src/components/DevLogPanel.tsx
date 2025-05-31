@@ -16,6 +16,7 @@
  * @param logs ログ配列。各要素は { type: string; message: string; time: string }
  * @param open パネルの表示状態（true: 表示, false: 非表示）
  * @param onClose パネルを閉じるコールバック
+ * @param onOpen パネルを開くコールバック
  * @param onClear ログをクリアするコールバック
  *
  * ## 利用例
@@ -28,7 +29,7 @@
  * ])
  * const [open, setOpen] = useState(true)
  *
- * <DevLogPanel logs={logs} open={open} onClose={() => setOpen(false)} onClear={() => setLogs([])} />
+ * <DevLogPanel logs={logs} open={open} onClose={() => setOpen(false)} onOpen={() => setOpen(true)} onClear={() => setLogs([])} />
  * ```
  *
  * ## Tips
@@ -51,6 +52,8 @@ type DevLogPanelProps = {
   open: boolean
   /** パネルを閉じるコールバック */
   onClose: () => void
+  /** パネルを開くコールバック */
+  onOpen: () => void
   /** ログをクリアするコールバック */
   onClear: () => void
 }
@@ -64,7 +67,7 @@ const MIN_HEIGHT = 120
 const MAX_WIDTH = 600
 const MAX_HEIGHT = 600
 
-export default function DevLogPanel({ logs, open, onClose, onClear }: DevLogPanelProps) {
+export default function DevLogPanel({ logs, open, onClose, onOpen, onClear }: DevLogPanelProps) {
   if (!isDev) return null
 
   const logEndRef = useRef<HTMLDivElement>(null)
@@ -287,8 +290,8 @@ export default function DevLogPanel({ logs, open, onClose, onClear }: DevLogPane
         <Fab
           color="primary"
           size="small"
-          sx={{ position: 'fixed', right: 32, bottom: 96, zIndex: 2100 }}
-          onClick={onClose}
+          sx={{ position: 'fixed', left: 32, bottom: 96, zIndex: 2100 }}
+          onClick={onOpen}
           aria-label="Open Dev Log"
         >
           <BugReportIcon />

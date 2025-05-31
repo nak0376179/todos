@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Box, Button, TextField, Typography, Paper, InputAdornment, Avatar, Link as MuiLink } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import { useGetUser, useCreateUser } from '../hooks/api'
+import { useGetUser, useCreateUser } from '@/hooks/api/user'
 import { useNavigate, Link as RouterLink } from 'react-router'
 import { useAtom } from 'jotai'
 import { userIdAtom } from '@/stores/user'
@@ -24,7 +24,7 @@ export default function Login() {
       navigate(`/select-group?user_id=${userId}`)
     } else {
       createUser.mutate(
-        { email: userId },
+        { body: { email: userId } },
         {
           onSuccess: () => navigate(`/select-group?user_id=${userId}`),
           onError: () => setError('ログイン/登録に失敗しました'),

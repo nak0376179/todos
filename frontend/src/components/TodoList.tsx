@@ -4,23 +4,28 @@ import {
   Button,
   TextField,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
+  Card,
+  CardContent,
   IconButton,
   Checkbox,
   Paper,
-  Divider,
   InputAdornment,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Stack,
+  Chip,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { useListTodos, useCreateTodo, useDeleteTodo, useUpdateTodo } from '@/hooks/api'
 import { useNavigate } from 'react-router'
 import { api } from '@/hooks/api/fetcher'
 import AdminLayout from '@/layouts/AdminLayout'
 import { useAtom } from 'jotai'
 import { userIdAtom, groupIdAtom } from '@/stores/user'
+import { useDevLog } from '@/components/DevLogContext'
 
 export default function TodoList() {
   const [ownerUserId] = useAtom(userIdAtom)
@@ -28,18 +33,27 @@ export default function TodoList() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [dueDate, setDueDate] = useState('')
-  const { data: todos, refetch } = useListTodos(groupId)
+  const { data: todos, refetch, isLoading } = useListTodos(groupId)
   const createTodo = useCreateTodo()
   const deleteTodo = useDeleteTodo()
   const updateTodo = useUpdateTodo()
   const [groupName, setGroupName] = useState('')
   const navigate = useNavigate()
 
+  // 開発者ログ管理
+  const { pushLog, pushErrorLog } = useDevLog()
+
+  // スナックバー用
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' })
+  const showSnackbar = (message: string, severity: 'success' | 'error' = 'success') => {
+    setSnackbar({ open: true, message, severity })
+  }
+
   useEffect(() => {
     if (groupId) {
       api
         .get(`/groups/${groupId}`)
-        .then((res) => setGroupName(res.data.name))
+        .then((res) => setGroupName(res.data.group_name || res.data.name || ''))
         .catch(() => setGroupName(''))
     }
   }, [groupId])
@@ -61,17 +75,49 @@ export default function TodoList() {
           setDescription('')
           setDueDate('')
           refetch()
+          showSnackbar('TODOを追加しました')
+          pushLog('追加', `TODO「${title}」を追加`)
+        },
+        onError: (err: any) => {
+          showSnackbar('追加に失敗しました', 'error')
+          pushErrorLog(`追加失敗: ${err?.message || 'unknown error'}`)
         },
       }
     )
   }
 
   const handleDelete = (todo_id: string) => {
-    deleteTodo.mutate({ group_id: groupId, todo_id }, { onSuccess: () => refetch() })
+    deleteTodo.mutate(
+      { group_id: groupId, todo_id },
+      {
+        onSuccess: () => {
+          refetch()
+          showSnackbar('TODOを削除しました')
+          pushLog('削除', `TODOを削除 (id: ${todo_id})`)
+        },
+        onError: (err: any) => {
+          showSnackbar('削除に失敗しました', 'error')
+          pushErrorLog(`削除失敗: ${err?.message || 'unknown error'}`)
+        },
+      }
+    )
   }
 
   const handleToggle = (todo_id: string, is_completed: boolean) => {
-    updateTodo.mutate({ group_id: groupId, todo_id, is_completed: !is_completed }, { onSuccess: () => refetch() })
+    updateTodo.mutate(
+      { group_id: groupId, todo_id, is_completed: !is_completed },
+      {
+        onSuccess: () => {
+          refetch()
+          showSnackbar('TODOを更新しました')
+          pushLog('更新', `TODOを${!is_completed ? '完了' : '未完了'}に変更 (id: ${todo_id})`)
+        },
+        onError: (err: any) => {
+          showSnackbar('更新に失敗しました', 'error')
+          pushErrorLog(`更新失敗: ${err?.message || 'unknown error'}`)
+        },
+      }
+    )
   }
 
   return (
@@ -124,50 +170,92 @@ export default function TodoList() {
               追加
             </Button>
           </Box>
-          <List sx={{ bgcolor: '#f5fafd', borderRadius: 2, boxShadow: 1 }}>
-            {todos?.length ? (
-              todos.map((todo, idx) => (
-                <>
-                  <ListItem
-                    key={todo.todo_id}
-                    secondaryAction={
-                      <IconButton edge="end" onClick={() => handleDelete(todo.todo_id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    }
-                    sx={{
-                      borderRadius: 2,
-                      mb: 1,
-                      boxShadow: 1,
-                      bgcolor: todo.is_completed ? '#e0f2f1' : '#fff',
-                      '&:hover': { bgcolor: '#e3f2fd' },
-                    }}
-                  >
+          {/* ローディング表示 */}
+          {isLoading ? (
+            <Box sx={{ py: 6, textAlign: 'center' }}>
+              <CircularProgress color="primary" />
+              <Typography color="text.secondary" mt={2}>
+                読み込み中...
+              </Typography>
+            </Box>
+          ) : todos?.length ? (
+            <Stack spacing={2} sx={{ mt: 2 }}>
+              {todos.map((todo) => (
+                <Card
+                  key={todo.todo_id}
+                  elevation={todo.is_completed ? 1 : 3}
+                  sx={{
+                    borderRadius: 3,
+                    bgcolor: todo.is_completed ? '#e0f2f1' : '#fff',
+                    opacity: todo.is_completed ? 0.7 : 1,
+                    position: 'relative',
+                  }}
+                >
+                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Checkbox
                       checked={todo.is_completed}
                       onChange={() => handleToggle(todo.todo_id, todo.is_completed)}
                       color="primary"
+                      icon={<CheckCircleIcon color="disabled" />}
+                      checkedIcon={<CheckCircleIcon color="success" />}
+                      sx={{ mr: 1 }}
                     />
-                    <ListItemText
-                      primary={
-                        <span style={{ fontWeight: 600, textDecoration: todo.is_completed ? 'line-through' : 'none' }}>
-                          {todo.title}
-                          {todo.is_completed ? '（完了）' : ''}
-                        </span>
-                      }
-                      secondary={todo.description}
-                    />
-                  </ListItem>
-                  {idx < todos.length - 1 && <Divider />}
-                </>
-              ))
-            ) : (
-              <Typography color="text.secondary" sx={{ my: 2, textAlign: 'center' }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        sx={{
+                          textDecoration: todo.is_completed ? 'line-through' : 'none',
+                          color: todo.is_completed ? 'text.secondary' : 'text.primary',
+                        }}
+                      >
+                        {todo.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                        {todo.description}
+                      </Typography>
+                      {todo.due_date && (
+                        <Chip
+                          label={`期限: ${todo.due_date.slice(0, 10)}`}
+                          size="small"
+                          color={todo.is_completed ? 'default' : 'primary'}
+                          sx={{ mt: 0.5 }}
+                        />
+                      )}
+                    </Box>
+                    <IconButton edge="end" onClick={() => handleDelete(todo.todo_id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              ))}
+            </Stack>
+          ) : (
+            <Box sx={{ py: 6, textAlign: 'center', color: 'text.secondary' }}>
+              <img
+                src="https://mui.com/static/branding/illustrations/empty-state.svg"
+                alt="empty"
+                width={180}
+                style={{ opacity: 0.7, marginBottom: 16 }}
+              />
+              <Typography variant="h6" fontWeight="bold">
                 TODOがありません
               </Typography>
-            )}
-          </List>
+              <Typography variant="body2">新しいTODOを追加してみましょう！</Typography>
+            </Box>
+          )}
         </Paper>
+        {/* スナックバー */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={2500}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity={snackbar.severity} variant="filled" sx={{ minWidth: 200 }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </AdminLayout>
   )

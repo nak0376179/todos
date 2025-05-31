@@ -7,21 +7,22 @@ install:  ## 初期セットアップ（バックエンド・フロントエン�
 	cd backend && poetry install
 	cd frontend && npm install
 
-up: ## LocalStackをバックグラウンドで起動（既に起動していれば再起動）
-	@if docker compose ps | grep -q 'localstack' && docker compose ps | grep -q 'Up'; then \
-		echo '=== LocalStack再起動 ==='; \
-		docker compose restart localstack; \
-	else \
-		echo '=== LocalStack起動 ==='; \
+up: ## LocalStackをバックグラウンドで起動
+	@if [ -z "$$(docker ps -q -f name=localstack-main)" ]; then \
+		echo "=== LocalStack起動 ==="; \
 		docker compose up -d; \
+	else \
+		echo "LocalStackはすでに起動中です。"; \
 	fi
 
-init-db:  ## データベースの初期化を行います
+init-db:  ## データベースの初期化()
 	@echo "=== データベース初期化 ==="
 	cd backend && poetry run python ../infrastructure/init_db.py
 
-down: ## LocalStackコンテナを停止
-	docker compose down
+down: ## LocalStackコンテナをすべて停止・削除
+	@echo "=== LocalStackコンテナをすべて削除 ==="
+	@docker ps -a --filter "name=localstack" --format "{{.ID}}" | xargs -r docker rm -f
+	@docker compose down
 
 dev:  ## フロントエンドとバックエンドの開発サーバを起動します（DB初期化も実施）
 	@echo "=== 開発サーバ起動 ==="

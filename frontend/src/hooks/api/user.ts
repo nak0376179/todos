@@ -1,21 +1,36 @@
 import { api } from './fetcher'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { User } from './types'
+import { useDevLog } from '@/components/DevLogContext'
 
-export const useCreateUser = () =>
-  useMutation({
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
     mutationFn: async (data: { email: string; name?: string }) => {
+      const { pushLog } = useDevLog()
       const res = await api.post<User>('/users', data)
+      pushLog('ユーザー登録', '/users')
       return res.data
+    },
+    onSuccess: (_, variables) => {
+      if (variables?.email) {
+        queryClient.invalidateQueries({ queryKey: ['user', variables.email] })
+      }
     },
   })
+}
 
 export const useGetUser = (user_id: string) =>
-  useQuery({
-    queryKey: ['user', user_id],
-    queryFn: async () => {
-      const res = await api.get<User>(`/users/${user_id}`)
-      return res.data
-    },
-    enabled: !!user_id,
-  }) 
+  (() => {
+    const { pushLog } = useDevLog()
+    return useQuery({
+      queryKey: ['user', user_id],
+      queryFn: async () => {
+        const res = await api.get<User>(`/users/${user_id}`)
+        pushLog('ユーザー取得', `/users/${user_id}`)
+        return res.data
+      },
+      enabled: !!user_id,
+      staleTime: 1000 * 60 * 5,
+    })
+  })()

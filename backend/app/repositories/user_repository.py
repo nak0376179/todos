@@ -21,6 +21,10 @@ class UserRepository:
         item = user.model_dump()
         if isinstance(item.get("created_at"), datetime):
             item["created_at"] = item["created_at"].isoformat()
+        if "groups" in item:
+            for g in item["groups"]:
+                if isinstance(g.get("invited_at"), datetime):
+                    g["invited_at"] = g["invited_at"].isoformat()
         self.table.put_item(Item=item)
         return user
 
@@ -40,3 +44,14 @@ class UserRepository:
         if items:
             return User(**items[0])
         return None
+
+    def update_user(self, user: User) -> User:
+        item = user.model_dump()
+        if isinstance(item.get("created_at"), datetime):
+            item["created_at"] = item["created_at"].isoformat()
+        if "groups" in item:
+            for g in item["groups"]:
+                if isinstance(g.get("invited_at"), datetime):
+                    g["invited_at"] = g["invited_at"].isoformat()
+        self.table.put_item(Item=item)
+        return user

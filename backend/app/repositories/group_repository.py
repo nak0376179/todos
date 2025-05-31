@@ -21,6 +21,10 @@ class GroupRepository:
         item = group.model_dump()
         if isinstance(item.get("created_at"), datetime):
             item["created_at"] = item["created_at"].isoformat()
+        if "users" in item:
+            for u in item["users"]:
+                if isinstance(u.get("invited_at"), datetime):
+                    u["invited_at"] = u["invited_at"].isoformat()
         self.table.put_item(Item=item)
         return group
 
@@ -30,3 +34,14 @@ class GroupRepository:
         if item:
             return Group(**item)
         return None
+
+    def update_group(self, group: Group) -> Group:
+        item = group.model_dump()
+        if isinstance(item.get("created_at"), datetime):
+            item["created_at"] = item["created_at"].isoformat()
+        if "users" in item:
+            for u in item["users"]:
+                if isinstance(u.get("invited_at"), datetime):
+                    u["invited_at"] = u["invited_at"].isoformat()
+        self.table.put_item(Item=item)
+        return group

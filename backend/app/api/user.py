@@ -1,5 +1,8 @@
+from typing import List
+
 from fastapi import APIRouter, HTTPException
 
+from app.models.user import UserGroup
 from app.schemas.user import UserCreate, UserRead
 from app.services.user_service import UserService
 
@@ -18,3 +21,11 @@ def get_user(user_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+
+@router.get("/{user_id}/groups", response_model=List[UserGroup])
+def get_user_groups(user_id: str):
+    user = service.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user.groups

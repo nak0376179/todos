@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from app.schemas.group import GroupCreate, GroupRead
-from app.schemas.group_member import GroupMemberCreate
 from app.services.group_service import GroupService
 
 router = APIRouter(prefix="/groups", tags=["groups"])
@@ -14,14 +13,19 @@ class GroupCreateRequest(BaseModel):
     owner_user_id: str
 
 
+class InviteMemberRequest(BaseModel):
+    user_id: str
+    role: str = "member"
+
+
 @router.post("", response_model=GroupRead)
 def create_group(body: GroupCreateRequest):
     return service.create_group(GroupCreate(name=body.name), owner_user_id=body.owner_user_id)
 
 
 @router.post("/{group_id}/invite")
-def invite_member(group_id: str, user_id: str):
-    return service.invite_member(group_id, user_id)
+def invite_member(group_id: str, body: InviteMemberRequest):
+    return service.invite_member(group_id, body.user_id, body.role)
 
 
 @router.get("/{group_id}", response_model=GroupRead)

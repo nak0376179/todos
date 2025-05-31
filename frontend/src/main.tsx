@@ -12,6 +12,50 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Noto Sans JP, sans-serif',
   },
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#43a047', // soft green
+      light: '#66bb6a',
+      dark: '#2e7031',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#b2dfdb', // soft teal/green
+      light: '#e0f2f1',
+      dark: '#4f9a94',
+      contrastText: '#222',
+    },
+    background: {
+      default: '#f4f8f6', // very light greenish
+      paper: '#f8fbf7',
+    },
+    error: {
+      main: '#e57373', // soft red
+    },
+    success: {
+      main: '#66bb6a',
+    },
+    info: {
+      main: '#80cbc4',
+    },
+    warning: {
+      main: '#ffd54f',
+    },
+    text: {
+      primary: '#222',
+      secondary: '#4f5b62',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+  },
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

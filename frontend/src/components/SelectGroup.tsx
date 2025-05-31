@@ -37,7 +37,7 @@ export default function SelectGroup() {
         </Typography>
         <List sx={{ mb: 3, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
           {groups?.length ? (
-            groups.map((g, idx) => (
+            groups.map((g: { group_id: string; role: string }, idx: number) => (
               <>
                 <ListItem
                   component="button"

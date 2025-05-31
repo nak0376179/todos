@@ -21,7 +21,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { useListTodos, useCreateTodo, useDeleteTodo, useUpdateTodo } from '@/hooks/api'
 import { useNavigate } from 'react-router'
-import { api } from '@/hooks/api/fetcher'
 import AdminLayout from '@/layouts/AdminLayout'
 import { useAtom } from 'jotai'
 import { userIdAtom, groupIdAtom } from '@/stores/user'
@@ -48,15 +47,6 @@ export default function TodoList() {
   const showSnackbar = (message: string, severity: 'success' | 'error' = 'success') => {
     setSnackbar({ open: true, message, severity })
   }
-
-  useEffect(() => {
-    if (groupId) {
-      api
-        .get(`/groups/${groupId}`)
-        .then((res) => setGroupName(res.data.group_name || res.data.name || ''))
-        .catch(() => setGroupName(''))
-    }
-  }, [groupId])
 
   useEffect(() => {
     if (!ownerUserId) {

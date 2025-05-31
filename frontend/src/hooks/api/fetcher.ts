@@ -1,13 +1,15 @@
-import axios from 'axios'
+import { Fetcher } from 'openapi-typescript-fetch'
+import { paths } from '@/types/api'
 
-export const api = axios.create({
-  baseURL: 'http://localhost:8000', // FastAPIのエンドポイント
-  headers: {
-    'Content-Type': 'application/json',
+const fetcher = Fetcher.for<paths>()
+
+// APIのベースURLを設定（必要に応じて環境変数などで切り替え）
+fetcher.configure({
+  baseUrl: 'http://localhost:8000', // FastAPIサーバーのURL
+  init: {
+    headers: {
+      'Content-Type': 'application/json',
+    },
   },
 })
-
-export const fetcher = async <T>(url: string, config?: object): Promise<T> => {
-  const res = await api.get<T>(url, config)
-  return res.data
-}
+export const apiClient = fetcher

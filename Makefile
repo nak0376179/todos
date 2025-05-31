@@ -72,6 +72,10 @@ clean: ## dockerの未使用リソースをクリーンアップ（安全）
 	docker volume prune -f
 	docker network prune -f
 
+generate-types: ## APIの型定義を生成
+	@echo "=== APIの型定義を生成 ==="
+	npx openapi-typescript http://localhost:8000/openapi.json --output frontend/src/types/api.ts
+
 help:  ## ヘルプ表示
 	@echo "Usage: make [target]"
 	@awk 'BEGIN {FS = ":.*##"; red = "\033[31m"; green = "\033[32m"; reset = "\033[0m"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  %s%-10s%s %s\n", green, $$1, reset, $$2}' $(MAKEFILE_LIST)

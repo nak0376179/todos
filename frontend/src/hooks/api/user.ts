@@ -1,4 +1,4 @@
-import { api } from './fetcher'
+import { apiClient } from './fetcher'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { User } from './types'
 import { useDevLog } from '@/components/DevLogContext'
@@ -8,7 +8,7 @@ export const useCreateUser = () => {
   return useMutation({
     mutationFn: async (data: { email: string; name?: string }) => {
       const { pushLog } = useDevLog()
-      const res = await api.post<User>('/users', data)
+      const res = await apiClient.path('/users').method('post').create()({ body: data })
       pushLog('ユーザー登録', '/users')
       return res.data
     },
@@ -26,7 +26,7 @@ export const useGetUser = (user_id: string) =>
     return useQuery({
       queryKey: ['user', user_id],
       queryFn: async () => {
-        const res = await api.get<User>(`/users/${user_id}`)
+        const res = await apiClient.path('/users/{user_id}').method('get').create()({ user_id })
         pushLog('ユーザー取得', `/users/${user_id}`)
         return res.data
       },

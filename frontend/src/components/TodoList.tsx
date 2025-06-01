@@ -190,9 +190,9 @@ export default function TodoList() {
                 読み込み中...
               </Typography>
             </Box>
-          ) : todos?.length ? (
+          ) : todos?.Items?.length ? (
             <Stack spacing={2} sx={{ mt: 2 }}>
-              {todos.map((todo) => (
+              {todos?.Items?.map((todo) => (
                 <Card
                   key={todo.todo_id}
                   elevation={todo.is_completed ? 1 : 3}

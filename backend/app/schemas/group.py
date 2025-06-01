@@ -1,26 +1,37 @@
+"""
+app/schemas/group.py
+グループスキーマ
+"""
+
 from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from app.models.group import GroupUser
+
+class GroupUser(BaseModel):
+    user_id: str = Field(..., description="ユーザーID")
+    email: str = Field(..., description="メールアドレス")
+    user_name: str = Field(..., description="表示名")
+    role: str = Field(..., description="ロール（admin/member）")
+    invited_at: str = Field(..., description="招待日時")
 
 
-class GroupUserResponse(BaseModel):
-    user_id: str
-    email: str
-    user_name: str
-    role: str
-    invited_at: datetime
+class Group(BaseModel):
+    group_id: str = Field(..., description="グループID（UUIDなどユニークな値）")
+    group_name: str = Field(..., description="グループ名")
+    owner_user_id: str = Field(..., description="グループ作成者のユーザーID")
+    created_at: str = Field(..., description="作成日時")
+    users: List[GroupUser] = Field(default_factory=list, description="グループのユーザー一覧")
+
+
+class GroupUserResponse(GroupUser):
+    pass
 
 
 class GroupCreateResponse(BaseModel):
     group_name: str
 
 
-class GroupReadResponse(BaseModel):
-    group_id: str
-    group_name: str
-    owner_user_id: str
-    created_at: datetime
-    users: List[GroupUser]
+class GroupReadResponse(Group):
+    pass

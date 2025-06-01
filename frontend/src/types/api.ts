@@ -72,23 +72,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/groups/{group_id}/invite": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Invite Member */
-        post: operations["invite_member_groups__group_id__invite_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/groups/{group_id}": {
         parameters: {
             query?: never;
@@ -154,35 +137,59 @@ export interface components {
             /** Owner User Id */
             owner_user_id: string;
         };
-        /** GroupRead */
-        GroupRead: {
-            /** Group Id */
+        /** GroupReadResponse */
+        GroupReadResponse: {
+            /**
+             * Group Id
+             * @description グループID（UUIDなどユニークな値）
+             */
             group_id: string;
-            /** Group Name */
+            /**
+             * Group Name
+             * @description グループ名
+             */
             group_name: string;
-            /** Owner User Id */
+            /**
+             * Owner User Id
+             * @description グループ作成者のユーザーID
+             */
             owner_user_id: string;
             /**
              * Created At
-             * Format: date-time
+             * @description 作成日時
              */
             created_at: string;
-            /** Users */
-            users: components["schemas"]["GroupUser"][];
+            /**
+             * Users
+             * @description グループのユーザー一覧
+             */
+            users?: components["schemas"]["GroupUser"][];
         };
         /** GroupUser */
         GroupUser: {
-            /** User Id */
+            /**
+             * User Id
+             * @description ユーザーID
+             */
             user_id: string;
-            /** Email */
+            /**
+             * Email
+             * @description メールアドレス
+             */
             email: string;
-            /** User Name */
+            /**
+             * User Name
+             * @description 表示名
+             */
             user_name: string;
-            /** Role */
+            /**
+             * Role
+             * @description ロール（admin/member）
+             */
             role: string;
             /**
              * Invited At
-             * Format: date-time
+             * @description 招待日時
              */
             invited_at: string;
         };
@@ -191,15 +198,54 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** InviteMemberRequest */
-        InviteMemberRequest: {
-            /** User Id */
-            user_id: string;
+        /** Todo */
+        Todo: {
             /**
-             * Role
-             * @default member
+             * Todo Id
+             * @description TODO ID（UUIDなどユニークな値）
              */
-            role: string;
+            todo_id: string;
+            /**
+             * Group Id
+             * @description 所属グループID
+             */
+            group_id: string;
+            /**
+             * Title
+             * @description タイトル
+             */
+            title: string;
+            /**
+             * Description
+             * @description 説明
+             */
+            description?: string | null;
+            /**
+             * Owner User Id
+             * @description 作成者ユーザーID
+             */
+            owner_user_id: string;
+            /**
+             * Due Date
+             * @description 期限
+             */
+            due_date?: string | null;
+            /**
+             * Is Completed
+             * @description 完了フラグ
+             * @default false
+             */
+            is_completed: boolean;
+            /**
+             * Created At
+             * @description 作成日時
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * @description 更新日時
+             */
+            updated_at: string | null;
         };
         /** TodoCreateRequest */
         TodoCreateRequest: {
@@ -212,35 +258,121 @@ export interface components {
             /** Owner User Id */
             owner_user_id: string;
         };
-        /** TodoRead */
-        TodoRead: {
-            /** Todo Id */
+        /** TodoCreateResponse */
+        TodoCreateResponse: {
+            /**
+             * Todo Id
+             * @description TODO ID（UUIDなどユニークな値）
+             */
             todo_id: string;
-            /** Group Id */
+            /**
+             * Group Id
+             * @description 所属グループID
+             */
             group_id: string;
-            /** Title */
+            /**
+             * Title
+             * @description タイトル
+             */
             title: string;
-            /** Description */
+            /**
+             * Description
+             * @description 説明
+             */
             description?: string | null;
-            /** Owner User Id */
+            /**
+             * Owner User Id
+             * @description 作成者ユーザーID
+             */
             owner_user_id: string;
-            /** Due Date */
+            /**
+             * Due Date
+             * @description 期限
+             */
             due_date?: string | null;
-            /** Is Completed */
+            /**
+             * Is Completed
+             * @description 完了フラグ
+             * @default false
+             */
             is_completed: boolean;
             /**
              * Created At
-             * Format: date-time
+             * @description 作成日時
              */
             created_at: string;
             /**
              * Updated At
-             * Format: date-time
+             * @description 更新日時
              */
-            updated_at: string;
+            updated_at: string | null;
         };
-        /** TodoUpdate */
-        TodoUpdate: {
+        /** TodoListResponse */
+        TodoListResponse: {
+            /**
+             * Items
+             * @description 取得アイテムのリスト
+             */
+            Items: components["schemas"]["Todo"][];
+            /**
+             * Lastevaluatedkey
+             * @description DynamoDBのLastEvaluatedKey。キーの辞書オブジェクト
+             */
+            LastEvaluatedKey?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** TodoReadResponse */
+        TodoReadResponse: {
+            /**
+             * Todo Id
+             * @description TODO ID（UUIDなどユニークな値）
+             */
+            todo_id: string;
+            /**
+             * Group Id
+             * @description 所属グループID
+             */
+            group_id: string;
+            /**
+             * Title
+             * @description タイトル
+             */
+            title: string;
+            /**
+             * Description
+             * @description 説明
+             */
+            description?: string | null;
+            /**
+             * Owner User Id
+             * @description 作成者ユーザーID
+             */
+            owner_user_id: string;
+            /**
+             * Due Date
+             * @description 期限
+             */
+            due_date?: string | null;
+            /**
+             * Is Completed
+             * @description 完了フラグ
+             * @default false
+             */
+            is_completed: boolean;
+            /**
+             * Created At
+             * @description 作成日時
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * @description 更新日時
+             */
+            updated_at: string | null;
+        };
+        /** TodoUpdateRequest */
+        TodoUpdateRequest: {
             /** Title */
             title?: string | null;
             /** Description */
@@ -250,46 +382,57 @@ export interface components {
             /** Is Completed */
             is_completed?: boolean | null;
         };
-        /** UserCreate */
-        UserCreate: {
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-            /** Name */
-            name?: string | null;
+        /** TodoUpdateResponse */
+        TodoUpdateResponse: {
+            /** Title */
+            title?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Due Date */
+            due_date?: string | null;
+            /** Is Completed */
+            is_completed?: boolean | null;
         };
-        /** UserRead */
-        UserRead: {
-            /** User Id */
-            user_id: string;
+        /** UserCreateRequest */
+        UserCreateRequest: {
             /**
              * Email
              * Format: email
              */
             email: string;
             /** User Name */
-            user_name?: string | null;
+            user_name: string;
+        };
+        /** UserCreateResponse */
+        UserCreateResponse: {
+            /**
+             * User Id
+             * @description ユーザーID（UUIDなどユニークな値）
+             */
+            user_id: string;
+            /**
+             * Email
+             * @description メールアドレス
+             */
+            email: string;
             /**
              * Created At
-             * Format: date-time
+             * @description 作成日時
              */
             created_at: string;
-            /** Groups */
-            groups: components["schemas"]["app__schemas__user__UserGroup"][];
-        };
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
+            /**
+             * User Name
+             * @description 表示名
+             */
+            user_name?: string | null;
+            /**
+             * Groups
+             * @description 所属グループ一覧
+             */
+            groups?: components["schemas"]["UserGroup"][];
         };
         /** UserGroup */
-        app__models__user__UserGroup: {
+        UserGroup: {
             /**
              * Group Id
              * @description グループID
@@ -307,24 +450,46 @@ export interface components {
             role: string;
             /**
              * Invited At
-             * Format: date-time
              * @description 招待日時
              */
             invited_at: string;
         };
-        /** UserGroup */
-        app__schemas__user__UserGroup: {
-            /** Group Id */
-            group_id: string;
-            /** Group Name */
-            group_name: string;
-            /** Role */
-            role: string;
+        /** UserReadResponse */
+        UserReadResponse: {
             /**
-             * Invited At
-             * Format: date-time
+             * User Id
+             * @description ユーザーID（UUIDなどユニークな値）
              */
-            invited_at: string;
+            user_id: string;
+            /**
+             * Email
+             * @description メールアドレス
+             */
+            email: string;
+            /**
+             * Created At
+             * @description 作成日時
+             */
+            created_at: string;
+            /**
+             * User Name
+             * @description 表示名
+             */
+            user_name?: string | null;
+            /**
+             * Groups
+             * @description 所属グループ一覧
+             */
+            groups?: components["schemas"]["UserGroup"][];
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
         };
     };
     responses: never;
@@ -344,7 +509,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserCreate"];
+                "application/json": components["schemas"]["UserCreateRequest"];
             };
         };
         responses: {
@@ -354,7 +519,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserRead"];
+                    "application/json": components["schemas"]["UserCreateResponse"];
                 };
             };
             /** @description Validation Error */
@@ -385,7 +550,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserRead"];
+                    "application/json": components["schemas"]["UserReadResponse"];
                 };
             };
             /** @description Validation Error */
@@ -416,7 +581,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["app__models__user__UserGroup"][];
+                    "application/json": components["schemas"]["UserGroup"][];
                 };
             };
             /** @description Validation Error */
@@ -449,42 +614,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GroupRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    invite_member_groups__group_id__invite_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                group_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InviteMemberRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["GroupReadResponse"];
                 };
             };
             /** @description Validation Error */
@@ -515,7 +645,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GroupRead"];
+                    "application/json": components["schemas"]["GroupReadResponse"];
                 };
             };
             /** @description Validation Error */
@@ -546,7 +676,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TodoRead"][];
+                    "application/json": components["schemas"]["TodoListResponse"];
                 };
             };
             /** @description Validation Error */
@@ -581,7 +711,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TodoRead"];
+                    "application/json": components["schemas"]["TodoCreateResponse"];
                 };
             };
             /** @description Validation Error */
@@ -613,7 +743,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TodoRead"];
+                    "application/json": components["schemas"]["TodoReadResponse"];
                 };
             };
             /** @description Validation Error */
@@ -645,7 +775,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: string;
+                    };
                 };
             };
             /** @description Validation Error */
@@ -671,7 +803,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TodoUpdate"];
+                "application/json": components["schemas"]["TodoUpdateRequest"];
             };
         };
         responses: {
@@ -681,7 +813,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TodoRead"];
+                    "application/json": components["schemas"]["TodoUpdateResponse"];
                 };
             };
             /** @description Validation Error */

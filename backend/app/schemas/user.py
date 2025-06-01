@@ -1,26 +1,36 @@
-from datetime import datetime
+"""
+app/schemas/user.py
+ユーザースキーマ
+"""
+
 from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
-from app.models.user import UserGroup
+
+class UserGroup(BaseModel):
+    group_id: str = Field(..., description="グループID")
+    group_name: str = Field(..., description="グループ名")
+    role: str = Field(..., description="ロール（admin/member）")
+    invited_at: str = Field(..., description="招待日時")
 
 
-class UserGroupResponse(BaseModel):
-    group_id: str
-    group_name: str
-    role: str
-    invited_at: datetime
+class User(BaseModel):
+    user_id: str = Field(..., description="ユーザーID（UUIDなどユニークな値）")
+    email: str = Field(..., description="メールアドレス")
+    created_at: str = Field(..., description="作成日時")
+    user_name: Optional[str] = Field(None, description="表示名")
+    groups: List[UserGroup] = Field(default_factory=list, description="所属グループ一覧")
 
 
 class UserCreateRequest(BaseModel):
     email: EmailStr
-    name: Optional[str] = None
+    user_name: str
 
 
-class UserReadResponse(BaseModel):
-    user_id: str
-    email: EmailStr
-    user_name: Optional[str] = None
-    created_at: datetime
-    groups: List[UserGroup]
+class UserCreateResponse(User):
+    pass
+
+
+class UserGetResponse(User):
+    pass

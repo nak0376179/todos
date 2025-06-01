@@ -31,7 +31,7 @@ export default function UserRegister() {
         fullWidth
         sx={{ mt: 2 }}
         disabled={isPending || !email}
-        onClick={() => mutate({ body: { email, name: name || undefined } })}
+        onClick={() => mutate({ body: { email, user_name: name || 'no name' } })}
       >
         登録
       </Button>

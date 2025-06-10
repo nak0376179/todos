@@ -145,16 +145,20 @@ class DynamoDBRepository(Generic[T]):
         update_expression: str,
         expression_attribute_values: Dict[str, Any],
         expression_attribute_names: Optional[Dict[str, str]] = None,
+        condition_expression: Optional[Union[str, ConditionBase]] = None,
+        return_values: str = "ALL_NEW",
     ) -> Optional[Dict[str, Any]]:
         try:
             params = {
                 "Key": key,
                 "UpdateExpression": update_expression,
                 "ExpressionAttributeValues": expression_attribute_values,
-                "ReturnValues": "ALL_NEW",
+                "ReturnValues": return_values,
             }
             if expression_attribute_names:
                 params["ExpressionAttributeNames"] = expression_attribute_names
+            if condition_expression:
+                params["ConditionExpression"] = condition_expression  # type: ignore
 
             response = self.table.update_item(**params)
             return response.get("Attributes")

@@ -6,36 +6,29 @@ app/repositories/group_repository.py
 """
 
 import logging
-import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import boto3
-
-DYNAMODB_ENDPOINT_URL = os.getenv("DYNAMODB_ENDPOINT_URL", "http://localhost:4566")
-AWS_REGION = os.getenv("AWS_REGION", "ap-northeast-1")
-
-dynamodb = boto3.resource(
-    "dynamodb",
-    endpoint_url=DYNAMODB_ENDPOINT_URL,
-    region_name=AWS_REGION,
-)
-GROUP_TABLE_NAME = "groups"
+from app.config import settings
+from app.repositories.dynamodb import DynamoDBRepository
 
 logger = logging.getLogger(__name__)
 
 
-class GroupRepository:
+class GroupRepository(DynamoDBRepository):
     def __init__(self) -> None:
-        self.table = dynamodb.Table(GROUP_TABLE_NAME)
+        super().__init__(settings.GROUP_TABLE_NAME)
 
     def create_group(
-        self, group_id: str, group_name: str, owner_user_id: str, users: List[Dict[str, Any]]
+        self,
+        group_id: str,
+        group_name: str,
+        owner_user_id: str,
+        users: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
         """
         新規グループを作成して保存します。
-        - created_at, invited_at は ISO8601 形式の文字列で保存。
-        - 成功すれば保存したアイテム（辞書）を返します。
+        - created_at は ISO8601 形式の文字列で保存。
         """
         now_iso = datetime.now().isoformat()
         item = {
@@ -47,7 +40,7 @@ class GroupRepository:
         }
         try:
             logger.info(f"[DynamoDB] put_item: {item}")
-            self.table.put_item(Item=item)
+            self.put_item(item)
             logger.info(f"[DynamoDB] put_item success: group_id={group_id}")
         except Exception as e:
             logger.error(f"[DynamoDB] put_item error: {e}")
@@ -60,8 +53,7 @@ class GroupRepository:
         """
         try:
             logger.info(f"[DynamoDB] get_item: group_id={group_id}")
-            response = self.table.get_item(Key={"group_id": group_id})
-            item = response.get("Item")
+            item = self.get_item({"group_id": group_id})
             logger.info(f"[DynamoDB] get_item success: found={bool(item)}")
             return item
         except Exception as e:

@@ -29,7 +29,7 @@ class GroupService:
             "email": owner_user["email"],
             "user_name": owner_user["user_name"] or owner_user["user_id"],
             "role": "admin",
-            "invited_at": now,
+            "invited_at": now.isoformat(),
         }
         users = [group_user]
         res = self.group_repo.create_group(group_id, group_name, owner_user_id, users)

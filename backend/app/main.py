@@ -14,24 +14,18 @@ app = FastAPI()
 
 class SecureHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # ドキュメント関連のパスはスキップ
+        doc_paths = ["/docs", "/redoc", "/openapi.json"]
+        if any(request.url.path.startswith(path) for path in doc_paths):
+            return await call_next(request)
+
         response: Response = await call_next(request)
 
-        # Content Security Policy（例：自己ドメインとCDNのみ許可）
         response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'"
-
-        # HSTS（HTTPS 強制）
         response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
-
-        # XSS 対策
         response.headers["X-XSS-Protection"] = "1; mode=block"
-
-        # Clickjacking 対策
         response.headers["X-Frame-Options"] = "DENY"
-
-        # MIME-type スニッフィング防止
         response.headers["X-Content-Type-Options"] = "nosniff"
-
-        # Referrer ポリシー
         response.headers["Referrer-Policy"] = "no-referrer"
 
         return response

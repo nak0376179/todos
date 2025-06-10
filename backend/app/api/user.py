@@ -1,4 +1,5 @@
 import logging
+import uuid
 from typing import List
 
 from fastapi import APIRouter, HTTPException
@@ -14,7 +15,8 @@ logger = logging.getLogger(__name__)
 @router.post("", response_model=UserCreateResponse)
 def create_user(body: UserCreateRequest):
     logger.info(f"[POST /users] body={body}")
-    user = user_service.create_user(body.email, body.email, body.user_name)
+    user_id = str(uuid.uuid4())
+    user = user_service.create_user(user_id, body.email, body.user_name)
     if not user:
         logger.error("[POST /users] Failed to create user")
         raise HTTPException(status_code=500, detail="Failed to create user")

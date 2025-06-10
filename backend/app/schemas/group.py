@@ -3,8 +3,7 @@ app/schemas/group.py
 グループスキーマ
 """
 
-from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -30,6 +29,7 @@ class GroupUserResponse(GroupUser):
 
 
 class GroupCreateResponse(BaseModel):
+    group_id: str
     group_name: str
 
 

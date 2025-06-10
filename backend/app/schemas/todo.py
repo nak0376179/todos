@@ -3,58 +3,58 @@ app/schemas/todo.py
 TODOスキーマ
 """
 
-from typing import Optional
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
 from app.schemas.common import DeleteItemResponse, QueryResponse
 
 
-class Todo(BaseModel):
-    todo_id: str = Field(..., description="TODO ID（UUIDなどユニークな値）")
-    group_id: str = Field(..., description="所属グループID")
-    title: str = Field(..., description="タイトル")
-    description: Optional[str] = Field(None, description="説明")
-    owner_user_id: str = Field(..., description="作成者ユーザーID")
-    due_date: Optional[str] = Field(None, description="期限")
-    is_completed: bool = Field(False, description="完了フラグ")
-    created_at: str = Field(..., description="作成日時")
-    updated_at: Optional[str] = Field(..., description="更新日時")
+class TodoBase(BaseModel):
+    title: str
+    description: str = ""
+    due_date: str = ""
+    owner_user_id: str
 
 
-class TodoUpdate(BaseModel):
-    title: Optional[str] = Field(None, description="タイトル")
-    description: Optional[str] = Field(None, description="説明")
-    due_date: Optional[str] = Field(None, description="期限")
-    is_completed: Optional[bool] = Field(None, description="完了フラグ")
-
-
-class TodoCreateRequest(BaseModel):
-    group_id: str = Field(..., description="所属グループID")
-    title: str = Field(..., description="タイトル")
-    description: Optional[str] = Field(None, description="説明")
-    due_date: Optional[str] = Field(None, description="期限")
-
-
-class TodoCreateResponse(Todo):
+class TodoCreateRequest(TodoBase):
     pass
 
 
-class TodoListResponse(QueryResponse[Todo]):
-    pass
+class TodoCreateResponse(TodoBase):
+    todo_id: str
+    group_id: str
+    created_at: str
+    updated_at: str
 
 
-class TodoGetResponse(Todo):
-    pass
+class TodoGetResponse(TodoBase):
+    todo_id: str
+    group_id: str
+    created_at: str
+    updated_at: str
 
 
-class TodoUpdateRequest(TodoUpdate):
-    pass
+class TodoUpdateRequest(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[str] = None
+    is_completed: Optional[bool] = None
 
 
-class TodoUpdateResponse(TodoUpdate):
-    pass
+class TodoUpdateResponse(TodoBase):
+    todo_id: str
+    group_id: str
+    created_at: str
+    updated_at: str
+    is_completed: bool = False
 
 
-class TodoDeleteResponse(DeleteItemResponse):
-    pass
+class TodoListResponse(BaseModel):
+    Items: List[Dict[str, Any]] = Field(default_factory=list)
+    LastEvaluatedKey: Optional[Dict[str, Any]] = None
+
+
+class TodoDeleteResponse(BaseModel):
+    todo_id: str

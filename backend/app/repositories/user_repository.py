@@ -31,7 +31,7 @@ class UserRepository:
         item = {
             "user_id": user_id,
             "email": email,
-            "name": name,
+            "user_name": name,  # nameをuser_nameとして保存
             "created_at": iso_ts,
             "groups": [],  # 初期グループは空リスト
         }

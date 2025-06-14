@@ -4,7 +4,8 @@
     {"AttributeName": "todo_id", "KeyType": "HASH"}
   ],
   "AttributeDefinitions": [
-    {"AttributeName": "todo_id", "AttributeType": "S"}
+    {"AttributeName": "todo_id", "AttributeType": "S"},
+    {"AttributeName": "group_id", "AttributeType": "S"}
   ],
   "BillingMode": "PAY_PER_REQUEST",
   "GlobalSecondaryIndexes": [
